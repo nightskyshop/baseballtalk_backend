@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PostDTO {
+public class PostResponseDTO {
     private String title;
     private String content;
     private int author;

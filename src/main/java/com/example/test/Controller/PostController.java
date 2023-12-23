@@ -1,6 +1,7 @@
 package com.example.test.Controller;
 
 import DTO.PostDTO;
+import DTO.PostResponseDTO;
 import com.example.test.Entity.PostEntity;
 import com.example.test.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ public class PostController {
 
     @GetMapping("")
     public Iterable<PostEntity> getAllPost() {
+        System.out.println("get All Post");
+        System.out.print(service.getAllPost());
         return service.getAllPost();
     }
 
@@ -23,7 +26,7 @@ public class PostController {
         return service.getPost(id);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public PostEntity createPost(@RequestBody PostDTO dto) {
         return service.createPost(dto);
     }
