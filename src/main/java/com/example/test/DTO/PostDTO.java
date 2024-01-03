@@ -1,4 +1,4 @@
-package DTO;
+package com.example.test.DTO;
 
 import com.example.test.Entity.UserEntity;
 import lombok.Getter;

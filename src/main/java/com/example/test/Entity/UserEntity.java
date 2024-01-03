@@ -21,6 +21,10 @@ public class UserEntity {
     private String email;
     private String password;
     private String image;
+    private String introduce;
+    private String team;
+    private boolean isdeleted;
+    private boolean isadmin;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     @JsonManagedReference

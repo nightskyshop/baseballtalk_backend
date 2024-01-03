@@ -1,7 +1,6 @@
 package com.example.test.Service;
 
-import DTO.PostDTO;
-import DTO.PostResponseDTO;
+import com.example.test.DTO.PostDTO;
 import com.example.test.Entity.PostEntity;
 import com.example.test.Entity.UserEntity;
 import com.example.test.Repository.PostRepository;

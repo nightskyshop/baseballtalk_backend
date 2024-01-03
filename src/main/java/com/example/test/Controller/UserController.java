@@ -1,6 +1,6 @@
 package com.example.test.Controller;
 
-import DTO.UserDTO;
+import com.example.test.DTO.UserDTO;
 import com.example.test.Entity.UserEntity;
 import com.example.test.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,4 +20,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public UserEntity updateUser(@PathVariable int id, @RequestBody UserDTO dto) { return service.updateUser(id, dto); }
+
+    @PatchMapping("/{id}/password")
+    public void updatePassword(@PathVariable int id, @RequestBody UserDTO dto) { service.updatePassword(id, dto); }
 }

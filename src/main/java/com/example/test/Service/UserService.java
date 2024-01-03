@@ -1,6 +1,6 @@
 package com.example.test.Service;
 
-import DTO.UserDTO;
+import com.example.test.DTO.UserDTO;
 import com.example.test.Entity.UserEntity;
 import com.example.test.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +21,23 @@ public class UserService {
         entity.setEmail(dto.getEmail());
         entity.setPassword(dto.getPassword());
         entity.setImage(dto.getImage());
+        entity.setTeam(dto.getTeam());
+//        entity.setIsdeleted(dto.getIsdeleted());
+//        entity.setIsadmin(dto.getIsadmin());
         return repository.save(entity);
     }
 
     public UserEntity updateUser(int id, UserDTO dto) {
         UserEntity entity = repository.findById(id);
         entity.setEmail(dto.getEmail());
-        entity.setPassword(dto.getPassword());
         entity.setImage(dto.getImage());
+        entity.setIntroduce(dto.getIntroduce());
         return repository.save(entity);
+    }
+
+    public void updatePassword(int id, UserDTO dto) {
+        UserEntity entity = repository.findById(id);
+        entity.setPassword(dto.getPassword());
+        repository.save(entity);
     }
 }
