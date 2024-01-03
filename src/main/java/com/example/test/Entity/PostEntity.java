@@ -1,12 +1,12 @@
 package com.example.test.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
+
+import java.util.HashMap;
 
 @Entity
 @Getter
@@ -17,7 +17,11 @@ public class PostEntity {
     private int id;
     private String title;
     private String content;
-    private int uid;
+    private String team;
+    private String category;
+    private int author_id;
+    private String author_username;
+    private String author_image;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonBackReference

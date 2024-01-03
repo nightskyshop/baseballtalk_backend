@@ -1,13 +1,16 @@
 package com.example.test.DTO;
 
-import com.example.test.Entity.UserEntity;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashMap;
 
 @Getter
 @Setter
 public class PostResponseDTO {
     private String title;
     private String content;
-    private int author;
+    private String team;
+    private String category;
+    private HashMap<String, String> author;
 }

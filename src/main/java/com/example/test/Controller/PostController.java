@@ -1,6 +1,7 @@
 package com.example.test.Controller;
 
 import com.example.test.DTO.PostDTO;
+import com.example.test.DTO.PostResponseDTO;
 import com.example.test.Entity.PostEntity;
 import com.example.test.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public PostEntity getPost(@PathVariable int id) {
+    public PostResponseDTO getPost(@PathVariable int id) {
         return service.getPost(id);
     }
 
