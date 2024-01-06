@@ -5,6 +5,7 @@ import com.example.test.DTO.PostResponseDTO;
 import com.example.test.Entity.PostEntity;
 import com.example.test.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,10 +16,8 @@ public class PostController {
     private PostService service;
 
     @GetMapping("")
-    public Iterable<PostEntity> getAllPost() {
-        System.out.println("get All Post");
-        System.out.print(service.getAllPost());
-        return service.getAllPost();
+    public Page<PostResponseDTO> getAllPost(@RequestParam int pageNo) {
+        return service.getAllPost(pageNo);
     }
 
     @GetMapping("/{id}")
@@ -27,13 +26,13 @@ public class PostController {
     }
 
     @PostMapping("")
-    public PostEntity createPost(@RequestBody PostDTO dto) {
-        return service.createPost(dto);
+    public void createPost(@RequestBody PostDTO dto) {
+        service.createPost(dto);
     }
 
     @PatchMapping("/{id}")
-    public PostEntity updatePost(@PathVariable int id, @RequestBody PostDTO dto) {
-        return service.updatePost(id, dto);
+    public void updatePost(@PathVariable int id, @RequestBody PostDTO dto) {
+        service.updatePost(id, dto);
     }
 
     @DeleteMapping("/{id}")

@@ -7,38 +7,53 @@ import com.example.test.Entity.UserEntity;
 import com.example.test.Repository.PostRepository;
 import com.example.test.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
+
+
 public class PostService {
     @Autowired
     private PostRepository repository;
     @Autowired
     private UserRepository user_repository;
 
-    public Iterable<PostEntity> getAllPost() {
-       return repository.findAll();
+    public Page<PostResponseDTO> getAllPost(int pageNo) {
+        int pageSize = 10;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<PostEntity> postAllPage = repository.findAll(pageRequest);
+        List<PostResponseDTO> dtos = postAllPage.getContent().stream()
+                .map(entity -> new PostResponseDTO(
+                        entity.getId(),
+                        entity.getTitle(),
+                        entity.getContent(),
+                        entity.getTeam(),
+                        entity.getCategory(),
+                        entity.getAuthor().getId()))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageRequest, postAllPage.getTotalElements());
     }
 
     public PostResponseDTO getPost(int id) {
         PostEntity post = repository.findById(id);
-        PostResponseDTO dto = new PostResponseDTO();
-        dto.setTitle(post.getTitle());
-        dto.setContent(post.getContent());
-        dto.setTeam(post.getTeam());
-        dto.setCategory(post.getCategory());
-
-        HashMap<String, String> user = new HashMap<String, String>();
-        user.put("id", String.valueOf(post.getAuthor_id()));
-        user.put("username", post.getAuthor_username());
-        user.put("image", post.getAuthor_image());
-        dto.setAuthor(user);
-
+        PostResponseDTO dto = new PostResponseDTO(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getTeam(),
+                post.getCategory(),
+                post.getAuthor().getId()
+        );
         return dto;
     }
 
-    public PostEntity createPost(PostDTO dto) {
+    public void createPost(PostDTO dto) {
         PostEntity entity = new PostEntity();
         entity.setContent(dto.getContent());
         entity.setTitle(dto.getTitle());
@@ -46,26 +61,21 @@ public class PostService {
         entity.setCategory(dto.getCategory());
 
         UserEntity user = user_repository.findById(dto.getAuthor());
-        entity.setAuthor_id(user.getId());
-        entity.setAuthor_username(user.getUsername());
-        entity.setAuthor_image(user.getImage());
         entity.setAuthor(user);
+        entity.getAuthor().getId();
 
         repository.save(entity);
-        return entity;
     }
 
-    public PostEntity updatePost(int id, PostDTO dto) {
+    public void updatePost(int id, PostDTO dto) {
         if (repository.existsById(id)) {
             PostEntity entity = repository.findById(id);
-            entity.setContent(dto.getContent());
             entity.setTitle(dto.getTitle());
+            entity.setContent(dto.getContent());
             entity.setTeam(dto.getTeam());
             entity.setCategory(dto.getCategory());
             repository.save(entity);
-            return entity;
         }
-        return null;
     }
 
     public void deletePost(int id) {

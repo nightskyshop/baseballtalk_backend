@@ -12,6 +12,4 @@ public class UserDTO {
     private String image;
     private String introduce;
     private String team;
-    private boolean isdeleted;
-    private boolean isadmin;
 }

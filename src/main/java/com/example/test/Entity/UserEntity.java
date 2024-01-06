@@ -1,6 +1,6 @@
 package com.example.test.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -23,12 +23,14 @@ public class UserEntity {
     private String image;
     private String introduce;
     private String team;
-    private boolean isdeleted;
-    private boolean isadmin;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<PostEntity> post = new ArrayList<>();
+
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<ChatEntity> chat = new ArrayList<>();
 
     @Builder
     public UserEntity() {}
