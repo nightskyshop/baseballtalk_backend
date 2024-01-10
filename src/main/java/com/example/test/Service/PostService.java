@@ -40,6 +40,25 @@ public class PostService {
         return new PageImpl<>(dtos, pageRequest, postAllPage.getTotalElements());
     }
 
+    public Page<PostResponseDTO> getPostbyUser(int pageNo, int user_id) {
+        UserEntity author = user_repository.findById(user_id);
+
+        int pageSize = 10;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<PostEntity> postbyUserPage = repository.findByAuthor(pageRequest, author);
+        List<PostResponseDTO> dtos = postbyUserPage.getContent().stream()
+                .map(entity -> new PostResponseDTO(
+                        entity.getId(),
+                        entity.getTitle(),
+                        entity.getContent(),
+                        entity.getTeam(),
+                        entity.getCategory(),
+                        entity.getAuthor().getId()))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageRequest, postbyUserPage.getTotalElements());
+
+    }
+
     public PostResponseDTO getPost(int id) {
         PostEntity post = repository.findById(id);
         PostResponseDTO dto = new PostResponseDTO(

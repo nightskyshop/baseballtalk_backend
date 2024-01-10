@@ -20,6 +20,9 @@ public class PostController {
         return service.getAllPost(pageNo);
     }
 
+    @GetMapping("/user/{user_id}")
+    public Page<PostResponseDTO> getPostbyUser(@RequestParam int pageNo, @PathVariable int user_id) { return service.getPostbyUser(pageNo, user_id); }
+
     @GetMapping("/{id}")
     public PostResponseDTO getPost(@PathVariable int id) {
         return service.getPost(id);

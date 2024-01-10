@@ -26,7 +26,7 @@ public class ChatService {
         UserEntity user = user_repository.findById(dto.getAuthor());
         entity.setAuthor(user);
         PostEntity post = post_repository.findById(dto.getPost());
-//        entity.setPost(post);
+        entity.setPost(post);
 
         repository.save(entity);
     }
