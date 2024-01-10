@@ -1,20 +1,25 @@
 package com.example.test.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@EnableJpaAuditing
+@EntityListeners(AuditingEntityListener.class)
 public class PostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +37,10 @@ public class PostEntity {
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<ChatEntity> chat = new ArrayList<>();
+
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<LikeEntity> like = new ArrayList<>();
 
     @Builder
     public PostEntity(){}

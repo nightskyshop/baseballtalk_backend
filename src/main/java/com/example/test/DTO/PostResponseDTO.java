@@ -15,13 +15,15 @@ public class PostResponseDTO {
     private String team;
     private String category;
     private int author;
+    private int like_count;
 
-    public PostResponseDTO(int id, String title, String content, String team, String category, int author) {
+    public PostResponseDTO(int id, String title, String content, String team, String category, int author, int like_count) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.team = team;
         this.category = category;
         this.author = author;
+        this.like_count = like_count;
     }
 }

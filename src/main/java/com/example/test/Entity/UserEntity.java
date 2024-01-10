@@ -32,6 +32,10 @@ public class UserEntity {
     @JsonManagedReference
     private List<ChatEntity> chat = new ArrayList<>();
 
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<LikeEntity> like = new ArrayList<>();
+
     @Builder
     public UserEntity() {}
 

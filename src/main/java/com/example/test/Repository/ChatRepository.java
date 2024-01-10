@@ -3,7 +3,6 @@ package com.example.test.Repository;
 import com.example.test.Entity.ChatEntity;
 import com.example.test.Entity.PostEntity;
 import com.example.test.Entity.UserEntity;
-import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;

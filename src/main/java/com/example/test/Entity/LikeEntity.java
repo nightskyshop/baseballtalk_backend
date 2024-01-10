@@ -1,41 +1,34 @@
 package com.example.test.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class ChatEntity {
+public class LikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String content;
+    int id;
+
+    private int type;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "user_id")
     @JsonBackReference
-    private UserEntity author;
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
     @JsonBackReference
     private PostEntity post;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<LikeEntity> like = new ArrayList<>();
-
-    @Builder
-    public ChatEntity(){}
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "chat_id")
+    @JsonBackReference
+    private ChatEntity chat;
 }
