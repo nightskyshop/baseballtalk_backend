@@ -31,7 +31,7 @@ public class ChatService {
 
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-        Page<ChatEntity> chatbyPostPage = repository.findByPost(pageRequest, post);
+        Page<ChatEntity> chatbyPostPage = repository.findByPostOrderByCreatedAtDesc(pageRequest, post);
         List<ChatDTO> dtos = chatbyPostPage.getContent().stream()
                 .map(entity -> new ChatDTO(
                         entity.getId(),
@@ -47,7 +47,7 @@ public class ChatService {
 
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-        Page<ChatEntity> chatbyUserPage = repository.findByAuthor(pageRequest, author);
+        Page<ChatEntity> chatbyUserPage = repository.findByAuthorOrderByCreatedAtDesc(pageRequest, author);
         List<ChatDTO> dtos = chatbyUserPage.getContent().stream()
                 .map(entity -> new ChatDTO(
                         entity.getId(),

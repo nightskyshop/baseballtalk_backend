@@ -27,7 +27,7 @@ public class PostService {
     public Page<PostResponseDTO> getAllPost(int pageNo) {
         int pageSize = 10;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-        Page<PostEntity> postAllPage = repository.findAll(pageRequest);
+        Page<PostEntity> postAllPage = repository.findAllByOrderByCreatedAtDesc(pageRequest);
         List<PostResponseDTO> dtos = postAllPage.getContent().stream()
                 .map(entity -> new PostResponseDTO(
                         entity.getId(),
@@ -46,7 +46,7 @@ public class PostService {
 
         int pageSize = 10;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-        Page<PostEntity> postbyUserPage = repository.findByAuthor(pageRequest, author);
+        Page<PostEntity> postbyUserPage = repository.findByAuthorOrderByCreatedAtDesc(pageRequest, author);
         List<PostResponseDTO> dtos = postbyUserPage.getContent().stream()
                 .map(entity -> new PostResponseDTO(
                         entity.getId(),
