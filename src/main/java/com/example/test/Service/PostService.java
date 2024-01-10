@@ -56,7 +56,6 @@ public class PostService {
                         entity.getAuthor().getId()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, postbyUserPage.getTotalElements());
-
     }
 
     public PostResponseDTO getPost(int id) {

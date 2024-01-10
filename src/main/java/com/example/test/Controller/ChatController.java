@@ -6,6 +6,7 @@ import com.example.test.Entity.ChatEntity;
 import com.example.test.Entity.PostEntity;
 import com.example.test.Service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,6 +14,12 @@ import org.springframework.web.bind.annotation.*;
 public class ChatController {
     @Autowired
     private ChatService service;
+
+    @GetMapping("/post/{post_id}")
+    public Page<ChatDTO> getChatbyPost(@RequestParam int pageNo, @PathVariable int post_id) { return service.getChatbyPost(pageNo, post_id); }
+
+    @GetMapping("/user/{user_id}")
+    public Page<ChatDTO> getChatbyUser(@RequestParam int pageNo, @PathVariable int user_id) { return service.getChatbyUser(pageNo, user_id); }
 
     @PostMapping("/create")
     public void createChat(@RequestBody ChatDTO dto) {
