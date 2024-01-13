@@ -5,6 +5,7 @@ import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.UserEntity;
 import com.example.test.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class UserController {
     @GetMapping("/{id}")
     public UserResponseDTO getUser(@PathVariable int id) { return service.getUser(id); }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
     public void createUser(@RequestBody UserDTO dto) { service.createUser(dto); }
 

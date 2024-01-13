@@ -6,6 +6,8 @@ import com.example.test.Entity.PostEntity;
 import com.example.test.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -28,6 +30,7 @@ public class PostController {
         return service.getPost(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
     public void createPost(@RequestBody PostDTO dto) {
         service.createPost(dto);
@@ -38,6 +41,7 @@ public class PostController {
         service.updatePost(id, dto);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable int id) {
         service.deletePost(id);

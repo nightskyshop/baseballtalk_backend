@@ -8,6 +8,7 @@ import com.example.test.Entity.PostEntity;
 import com.example.test.Service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,11 +23,12 @@ public class ChatController {
     @GetMapping("/user/{user_id}")
     public Page<ChatResponseDTO> getChatbyUser(@RequestParam int pageNo, @PathVariable int user_id) { return service.getChatbyUser(pageNo, user_id); }
 
-    @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("")
     public void createChat(@RequestBody ChatDTO dto) {
         service.createChat(dto);
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/{id}")
     public void updateChat(@PathVariable int id, @RequestBody ChatDTO dto) { service.updateChat(id, dto); }
 }
