@@ -2,6 +2,7 @@ package com.example.test.Service;
 
 import com.example.test.DTO.PostDTO;
 import com.example.test.DTO.PostResponseDTO;
+import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.PostEntity;
 import com.example.test.Entity.UserEntity;
 import com.example.test.Repository.PostRepository;
@@ -35,7 +36,14 @@ public class PostService {
                         entity.getContent(),
                         entity.getTeam(),
                         entity.getCategory(),
-                        entity.getAuthor().getId(),
+                        new UserResponseDTO(
+                                entity.getAuthor().getId(),
+                                entity.getAuthor().getUsername(),
+                                entity.getAuthor().getEmail(),
+                                entity.getAuthor().getImage(),
+                                entity.getAuthor().getIntroduce(),
+                                entity.getAuthor().getTeam()
+                        ),
                         entity.getLike().size()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, postAllPage.getTotalElements());
@@ -54,7 +62,14 @@ public class PostService {
                         entity.getContent(),
                         entity.getTeam(),
                         entity.getCategory(),
-                        entity.getAuthor().getId(),
+                        new UserResponseDTO(
+                                entity.getAuthor().getId(),
+                                entity.getAuthor().getUsername(),
+                                entity.getAuthor().getEmail(),
+                                entity.getAuthor().getImage(),
+                                entity.getAuthor().getIntroduce(),
+                                entity.getAuthor().getTeam()
+                        ),
                         entity.getLike().size()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, postbyUserPage.getTotalElements());
@@ -68,7 +83,14 @@ public class PostService {
                 post.getContent(),
                 post.getTeam(),
                 post.getCategory(),
-                post.getAuthor().getId(),
+                new UserResponseDTO(
+                        post.getAuthor().getId(),
+                        post.getAuthor().getUsername(),
+                        post.getAuthor().getEmail(),
+                        post.getAuthor().getImage(),
+                        post.getAuthor().getIntroduce(),
+                        post.getAuthor().getTeam()
+                ),
                 post.getLike().size()
         );
         return dto;

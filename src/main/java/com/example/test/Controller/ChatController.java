@@ -1,6 +1,7 @@
 package com.example.test.Controller;
 
 import com.example.test.DTO.ChatDTO;
+import com.example.test.DTO.ChatResponseDTO;
 import com.example.test.DTO.PostDTO;
 import com.example.test.Entity.ChatEntity;
 import com.example.test.Entity.PostEntity;
@@ -16,10 +17,10 @@ public class ChatController {
     private ChatService service;
 
     @GetMapping("/post/{post_id}")
-    public Page<ChatDTO> getChatbyPost(@RequestParam int pageNo, @PathVariable int post_id) { return service.getChatbyPost(pageNo, post_id); }
+    public Page<ChatResponseDTO> getChatbyPost(@RequestParam int pageNo, @PathVariable int post_id) { return service.getChatbyPost(pageNo, post_id); }
 
     @GetMapping("/user/{user_id}")
-    public Page<ChatDTO> getChatbyUser(@RequestParam int pageNo, @PathVariable int user_id) { return service.getChatbyUser(pageNo, user_id); }
+    public Page<ChatResponseDTO> getChatbyUser(@RequestParam int pageNo, @PathVariable int user_id) { return service.getChatbyUser(pageNo, user_id); }
 
     @PostMapping("/create")
     public void createChat(@RequestBody ChatDTO dto) {

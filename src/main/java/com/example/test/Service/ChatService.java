@@ -1,6 +1,8 @@
 package com.example.test.Service;
 
 import com.example.test.DTO.ChatDTO;
+import com.example.test.DTO.ChatResponseDTO;
+import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.ChatEntity;
 import com.example.test.Entity.PostEntity;
 import com.example.test.Entity.UserEntity;
@@ -26,33 +28,47 @@ public class ChatService {
     @Autowired
     private PostRepository post_repository;
 
-    public Page<ChatDTO> getChatbyPost(int pageNo, int post_id) {
+    public Page<ChatResponseDTO> getChatbyPost(int pageNo, int post_id) {
         PostEntity post = post_repository.findById(post_id);
 
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
         Page<ChatEntity> chatbyPostPage = repository.findByPostOrderByCreatedAtDesc(pageRequest, post);
-        List<ChatDTO> dtos = chatbyPostPage.getContent().stream()
-                .map(entity -> new ChatDTO(
+        List<ChatResponseDTO> dtos = chatbyPostPage.getContent().stream()
+                .map(entity -> new ChatResponseDTO(
                         entity.getId(),
                         entity.getContent(),
-                        entity.getAuthor().getId(),
+                        new UserResponseDTO(
+                                entity.getAuthor().getId(),
+                                entity.getAuthor().getUsername(),
+                                entity.getAuthor().getEmail(),
+                                entity.getAuthor().getImage(),
+                                entity.getAuthor().getIntroduce(),
+                                entity.getAuthor().getTeam()
+                        ),
                         entity.getPost().getId()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, chatbyPostPage.getTotalElements());
     }
 
-    public Page<ChatDTO> getChatbyUser(int pageNo, int user_id) {
+    public Page<ChatResponseDTO> getChatbyUser(int pageNo, int user_id) {
         UserEntity author = user_repository.findById(user_id);
 
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
         Page<ChatEntity> chatbyUserPage = repository.findByAuthorOrderByCreatedAtDesc(pageRequest, author);
-        List<ChatDTO> dtos = chatbyUserPage.getContent().stream()
-                .map(entity -> new ChatDTO(
+        List<ChatResponseDTO> dtos = chatbyUserPage.getContent().stream()
+                .map(entity -> new ChatResponseDTO(
                         entity.getId(),
                         entity.getContent(),
-                        entity.getAuthor().getId(),
+                        new UserResponseDTO(
+                                entity.getAuthor().getId(),
+                                entity.getAuthor().getUsername(),
+                                entity.getAuthor().getEmail(),
+                                entity.getAuthor().getImage(),
+                                entity.getAuthor().getIntroduce(),
+                                entity.getAuthor().getTeam()
+                        ),
                         entity.getPost().getId()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, chatbyUserPage.getTotalElements());
