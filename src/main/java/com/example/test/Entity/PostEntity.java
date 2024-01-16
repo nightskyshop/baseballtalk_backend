@@ -18,9 +18,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@EnableJpaAuditing
-@EntityListeners(AuditingEntityListener.class)
-public class PostEntity {
+public class PostEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -28,11 +26,6 @@ public class PostEntity {
     private String content;
     private String team;
     private String category;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")

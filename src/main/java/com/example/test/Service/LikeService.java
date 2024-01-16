@@ -41,7 +41,15 @@ public class LikeService {
         repository.save(entity);
     }
 
-    public void deleteLike(int id) {
-        repository.deleteById(id);
+    public void deleteLike(LikeDTO dto) {
+        UserEntity user = user_repository.findById(dto.getUser());
+
+        if (dto.getType() == 0) {
+            PostEntity post = post_repository.findById(dto.getPost());
+            repository.deleteByUserAndPost(user, post);
+        } else if (dto.getType() == 1) {
+            ChatEntity chat = chat_repository.findById(dto.getChat());
+            repository.deleteByUserAndChat(user, chat);
+        }
     }
 }

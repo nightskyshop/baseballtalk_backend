@@ -12,17 +12,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/kakao")
 public class KakaoController {
-    private final KakaoService kakaoService;
-
-    @GetMapping("/login")
-    public String login() {
-        return kakaoService.getKakaoLogin();
-    }
-
-    @GetMapping("/redirect")
-    public String redirect(HttpServletRequest request) throws Exception {
-        System.out.println("auth code:" + request.getParameter("code"));
-        String user = kakaoService.getKakaoInfo(request.getParameter("code"), request);
-        return "localhost:3000/user-profile/";
-    }
+//    private final KakaoService kakaoService;
+//
+//    @GetMapping("/login")
+//    public String login() {
+//        return kakaoService.getKakaoLogin();
+//    }
+//
+//    @GetMapping("/redirect")
+//    public String redirect(HttpServletRequest request) throws Exception {
+//        System.out.println("auth code:" + request.getParameter("code"));
+//        String user = kakaoService.getKakaoInfo(request.getParameter("code"), request);
+//        return "localhost:3000/user-profile/";
+//    }
 }

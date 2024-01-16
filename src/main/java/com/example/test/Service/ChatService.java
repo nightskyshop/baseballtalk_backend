@@ -46,7 +46,9 @@ public class ChatService {
                                 entity.getAuthor().getIntroduce(),
                                 entity.getAuthor().getTeam()
                         ),
-                        entity.getPost().getId()))
+                        entity.getPost().getId(),
+                        entity.getCreatedAt(),
+                        entity.getUpdatedAt()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, chatbyPostPage.getTotalElements());
     }
@@ -69,7 +71,9 @@ public class ChatService {
                                 entity.getAuthor().getIntroduce(),
                                 entity.getAuthor().getTeam()
                         ),
-                        entity.getPost().getId()))
+                        entity.getPost().getId(),
+                        entity.getCreatedAt(),
+                        entity.getUpdatedAt()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, chatbyUserPage.getTotalElements());
     }

@@ -13,10 +13,10 @@ public class LikeController {
     private LikeService service;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/create")
+    @PostMapping("")
     public void createLike(@RequestBody LikeDTO dto) { service.createLike(dto); }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
-    public void deleteLike(@PathVariable int id) { service.deleteLike(id); }
+    @DeleteMapping("")
+    public void deleteLike(@RequestBody LikeDTO dto) { service.deleteLike(dto); }
 }

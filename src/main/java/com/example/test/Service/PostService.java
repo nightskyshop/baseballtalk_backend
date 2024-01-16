@@ -44,7 +44,9 @@ public class PostService {
                                 entity.getAuthor().getIntroduce(),
                                 entity.getAuthor().getTeam()
                         ),
-                        entity.getLike().size()))
+                        entity.getLike().size(),
+                        entity.getCreatedAt(),
+                        entity.getUpdatedAt()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, postAllPage.getTotalElements());
     }
@@ -70,7 +72,9 @@ public class PostService {
                                 entity.getAuthor().getIntroduce(),
                                 entity.getAuthor().getTeam()
                         ),
-                        entity.getLike().size()))
+                        entity.getLike().size(),
+                        entity.getCreatedAt(),
+                        entity.getUpdatedAt()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, postbyUserPage.getTotalElements());
     }
@@ -91,7 +95,9 @@ public class PostService {
                         post.getAuthor().getIntroduce(),
                         post.getAuthor().getTeam()
                 ),
-                post.getLike().size()
+                post.getLike().size(),
+                post.getCreatedAt(),
+                post.getUpdatedAt()
         );
         return dto;
     }

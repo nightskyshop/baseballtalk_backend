@@ -1,11 +1,9 @@
 package com.example.test.DTO;
 
-import com.example.test.Entity.ChatEntity;
-import com.example.test.Entity.UserEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,8 +15,20 @@ public class PostResponseDTO {
     private String category;
     private UserResponseDTO author;
     private int like_count;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public PostResponseDTO(int id, String title, String content, String team, String category, UserResponseDTO author, int like_count) {
+    public PostResponseDTO(
+            int id,
+            String title,
+            String content,
+            String team,
+            String category,
+            UserResponseDTO author,
+            int like_count,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -26,5 +36,7 @@ public class PostResponseDTO {
         this.category = category;
         this.author = author;
         this.like_count = like_count;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }
