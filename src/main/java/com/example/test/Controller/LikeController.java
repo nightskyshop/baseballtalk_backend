@@ -12,11 +12,24 @@ public class LikeController {
     @Autowired
     private LikeService service;
 
+    @GetMapping("")
+    public boolean existLike(
+            @RequestParam int user_id,
+            @RequestParam int type,
+            @RequestParam int post_id,
+            @RequestParam int chat_id
+    ) { return service.existLike(user_id, type, post_id, chat_id); }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
     public void createLike(@RequestBody LikeDTO dto) { service.createLike(dto); }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("")
-    public void deleteLike(@RequestBody LikeDTO dto) { service.deleteLike(dto); }
+    @DeleteMapping("/{user_id}")
+    public void deleteLike(
+            @PathVariable int user_id,
+            @RequestParam int type,
+            @RequestParam int post_id,
+            @RequestParam int chat_id
+    ) { service.deleteLike(user_id, type, post_id, chat_id); }
 }

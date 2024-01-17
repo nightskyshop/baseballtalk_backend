@@ -9,6 +9,7 @@ import com.example.test.Entity.UserEntity;
 import com.example.test.Repository.ChatRepository;
 import com.example.test.Repository.PostRepository;
 import com.example.test.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -96,6 +97,7 @@ public class ChatService {
         repository.save(entity);
     }
 
+    @Transactional
     public void deleteChat(int id) {
         repository.deleteById(id);
     }

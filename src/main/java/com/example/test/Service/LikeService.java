@@ -9,6 +9,7 @@ import com.example.test.Repository.ChatRepository;
 import com.example.test.Repository.LikeRepository;
 import com.example.test.Repository.PostRepository;
 import com.example.test.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,20 @@ public class LikeService {
     private PostRepository post_repository;
     @Autowired
     private ChatRepository chat_repository;
+
+    public boolean existLike(int user_id, int type, int post_id, int chat_id) {
+        UserEntity user = user_repository.findById(user_id);
+
+        if (type == 0) {
+            PostEntity post = post_repository.findById(post_id);
+            return repository.existsByUserAndPost(user, post);
+        } else if (type == 1) {
+            ChatEntity chat = chat_repository.findById(chat_id);
+            return repository.existsByUserAndChat(user, chat);
+        }
+
+        return false;
+    }
 
     public void createLike(LikeDTO dto) {
         LikeEntity entity = new LikeEntity();
@@ -41,14 +56,15 @@ public class LikeService {
         repository.save(entity);
     }
 
-    public void deleteLike(LikeDTO dto) {
-        UserEntity user = user_repository.findById(dto.getUser());
+    @Transactional
+    public void deleteLike(int user_id, int type, int post_id, int chat_id) {
+        UserEntity user = user_repository.findById(user_id);
 
-        if (dto.getType() == 0) {
-            PostEntity post = post_repository.findById(dto.getPost());
+        if (type == 0) {
+            PostEntity post = post_repository.findById(post_id);
             repository.deleteByUserAndPost(user, post);
-        } else if (dto.getType() == 1) {
-            ChatEntity chat = chat_repository.findById(dto.getChat());
+        } else if (type == 1) {
+            ChatEntity chat = chat_repository.findById(chat_id);
             repository.deleteByUserAndChat(user, chat);
         }
     }
