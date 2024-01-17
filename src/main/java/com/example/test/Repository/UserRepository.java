@@ -6,4 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     UserEntity findById(int id);
+    boolean existsById(int id);
 }

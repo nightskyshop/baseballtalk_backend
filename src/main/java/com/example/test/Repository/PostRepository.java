@@ -11,4 +11,5 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
     Page<PostEntity> findByAuthorOrderByCreatedAtDesc(PageRequest pageRequest, UserEntity user);
     PostEntity findById(int id);
     void deleteById(int id);
+    boolean existsById(int id);
 }

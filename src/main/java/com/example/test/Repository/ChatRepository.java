@@ -12,4 +12,5 @@ public interface ChatRepository  extends JpaRepository<ChatEntity, Integer> {
     Page<ChatEntity> findByAuthorOrderByCreatedAtDesc(PageRequest pageRequest, UserEntity author);
     ChatEntity findById(int id);
     void deleteById(int id);
+    boolean existsById(int id);
 }

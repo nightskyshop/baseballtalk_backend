@@ -13,16 +13,19 @@ public class UserService {
     private UserRepository repository;
 
     public UserResponseDTO getUser(int id) {
-        UserEntity entity = repository.findById(id);
-        UserResponseDTO dto = new UserResponseDTO(
-                entity.getId(),
-                entity.getUsername(),
-                entity.getEmail(),
-                entity.getImage(),
-                entity.getIntroduce(),
-                entity.getTeam()
-        );
-        return dto;
+        if (repository.existsById(id)) {
+            UserEntity entity = repository.findById(id);
+            UserResponseDTO dto = new UserResponseDTO(
+                    entity.getId(),
+                    entity.getUsername(),
+                    entity.getEmail(),
+                    entity.getImage(),
+                    entity.getIntroduce(),
+                    entity.getTeam()
+            );
+            return dto;
+        }
+        return new UserResponseDTO(0, "", "", "", "", "");
     }
 
     public void createUser(UserDTO dto) {
