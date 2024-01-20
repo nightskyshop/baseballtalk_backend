@@ -20,6 +20,7 @@ public class UserEntity {
     private String username;
     private String email;
     private String password;
+    @Column(length = 65555)
     private String image;
     private String introduce;
     private String team;
@@ -36,8 +37,7 @@ public class UserEntity {
     @JsonManagedReference
     private List<LikeEntity> like = new ArrayList<>();
 
+    private String refresh_token;
     @Builder
     public UserEntity() {}
-
-    public void Entity() {}
 }

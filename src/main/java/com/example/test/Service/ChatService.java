@@ -37,19 +37,19 @@ public class ChatService {
         Page<ChatEntity> chatbyPostPage = repository.findByPostOrderByCreatedAtDesc(pageRequest, post);
         List<ChatResponseDTO> dtos = chatbyPostPage.getContent().stream()
                 .map(entity -> new ChatResponseDTO(
-                        entity.getId(),
-                        entity.getContent(),
-                        new UserResponseDTO(
-                                entity.getAuthor().getId(),
-                                entity.getAuthor().getUsername(),
-                                entity.getAuthor().getEmail(),
-                                entity.getAuthor().getImage(),
-                                entity.getAuthor().getIntroduce(),
-                                entity.getAuthor().getTeam()
-                        ),
-                        entity.getPost().getId(),
-                        entity.getCreatedAt(),
-                        entity.getUpdatedAt()))
+                                entity.getId(),
+                                entity.getContent(),
+                                new UserResponseDTO(
+                                        entity.getAuthor().getId(),
+                                        entity.getAuthor().getUsername(),
+                                        entity.getAuthor().getEmail(),
+                                        entity.getAuthor().getImage(),
+                                        entity.getAuthor().getIntroduce(),
+                                        entity.getAuthor().getTeam()
+                                ),
+                                entity.getPost().getId(),
+                                entity.getCreatedAt(),
+                                entity.getUpdatedAt()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, chatbyPostPage.getTotalElements());
     }
