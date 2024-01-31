@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,54 +55,62 @@ public class PostService {
     }
 
     public Page<PostResponseDTO> getPostbyUser(int pageNo, int user_id) {
-        UserEntity author = user_repository.findById(user_id);
+        if (user_repository.existsById(user_id)) {
+            UserEntity author = user_repository.findById(user_id);
 
-        int pageSize = 10;
-        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-        Page<PostEntity> postbyUserPage = repository.findByAuthorOrderByCreatedAtDesc(pageRequest, author);
-        List<PostResponseDTO> dtos = postbyUserPage.getContent().stream()
-                .map(entity -> new PostResponseDTO(
-                        entity.getId(),
-                        entity.getTitle(),
-                        entity.getContent(),
-                        entity.getTeam(),
-                        entity.getCategory(),
-                        new UserResponseDTO(
-                                entity.getAuthor().getId(),
-                                entity.getAuthor().getUsername(),
-                                entity.getAuthor().getEmail(),
-                                entity.getAuthor().getImage(),
-                                entity.getAuthor().getIntroduce(),
-                                entity.getAuthor().getTeam()
-                        ),
-                        entity.getLike().size(),
-                        entity.getCreatedAt(),
-                        entity.getUpdatedAt()))
-                .collect(Collectors.toList());
-        return new PageImpl<>(dtos, pageRequest, postbyUserPage.getTotalElements());
+            int pageSize = 10;
+            PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+            Page<PostEntity> postbyUserPage = repository.findByAuthorOrderByCreatedAtDesc(pageRequest, author);
+            List<PostResponseDTO> dtos = postbyUserPage.getContent().stream()
+                    .map(entity -> new PostResponseDTO(
+                            entity.getId(),
+                            entity.getTitle(),
+                            entity.getContent(),
+                            entity.getTeam(),
+                            entity.getCategory(),
+                            new UserResponseDTO(
+                                    entity.getAuthor().getId(),
+                                    entity.getAuthor().getUsername(),
+                                    entity.getAuthor().getEmail(),
+                                    entity.getAuthor().getImage(),
+                                    entity.getAuthor().getIntroduce(),
+                                    entity.getAuthor().getTeam()
+                            ),
+                            entity.getLike().size(),
+                            entity.getCreatedAt(),
+                            entity.getUpdatedAt()))
+                    .collect(Collectors.toList());
+            return new PageImpl<>(dtos, pageRequest, postbyUserPage.getTotalElements());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found.");
+        }
     }
 
     public PostResponseDTO getPost(int id) {
-        PostEntity post = repository.findById(id);
-        PostResponseDTO dto = new PostResponseDTO(
-                post.getId(),
-                post.getTitle(),
-                post.getContent(),
-                post.getTeam(),
-                post.getCategory(),
-                new UserResponseDTO(
-                        post.getAuthor().getId(),
-                        post.getAuthor().getUsername(),
-                        post.getAuthor().getEmail(),
-                        post.getAuthor().getImage(),
-                        post.getAuthor().getIntroduce(),
-                        post.getAuthor().getTeam()
-                ),
-                post.getLike().size(),
-                post.getCreatedAt(),
-                post.getUpdatedAt()
-        );
-        return dto;
+        if (repository.existsById(id)) {
+            PostEntity post = repository.findById(id);
+            PostResponseDTO dto = new PostResponseDTO(
+                    post.getId(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getTeam(),
+                    post.getCategory(),
+                    new UserResponseDTO(
+                            post.getAuthor().getId(),
+                            post.getAuthor().getUsername(),
+                            post.getAuthor().getEmail(),
+                            post.getAuthor().getImage(),
+                            post.getAuthor().getIntroduce(),
+                            post.getAuthor().getTeam()
+                    ),
+                    post.getLike().size(),
+                    post.getCreatedAt(),
+                    post.getUpdatedAt()
+            );
+            return dto;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post Not Found.");
+        }
     }
 
     public void createPost(PostDTO dto) {
@@ -125,11 +135,17 @@ public class PostService {
             entity.setTeam(dto.getTeam());
             entity.setCategory(dto.getCategory());
             repository.save(entity);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post Not Found.");
         }
     }
 
     @Transactional
     public void deletePost(int id) {
-        repository.deleteById(id);
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post Not Found.");
+        }
     }
 }
