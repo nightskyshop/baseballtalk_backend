@@ -2,10 +2,13 @@ package com.example.test.Service;
 
 import com.example.test.DTO.PostDTO;
 import com.example.test.DTO.PostResponseDTO;
+import com.example.test.DTO.TeamPostDTO;
 import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.PostEntity;
+import com.example.test.Entity.TeamEntity;
 import com.example.test.Entity.UserEntity;
 import com.example.test.Repository.PostRepository;
+import com.example.test.Repository.TeamRepository;
 import com.example.test.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +18,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
-
-
 public class PostService {
     @Autowired
     private PostRepository repository;
     @Autowired
     private UserRepository user_repository;
+    @Autowired
+    private TeamRepository team_repository;
 
     public Page<PostResponseDTO> getAllPost(int pageNo) {
         int pageSize = 10;
@@ -37,7 +39,10 @@ public class PostService {
                         entity.getId(),
                         entity.getTitle(),
                         entity.getContent(),
-                        entity.getTeam(),
+                        new TeamPostDTO(
+                                entity.getTeam().getId(),
+                                entity.getTeam().getTeamname()
+                        ),
                         entity.getCategory(),
                         new UserResponseDTO(
                                 entity.getAuthor().getId(),
@@ -66,7 +71,10 @@ public class PostService {
                             entity.getId(),
                             entity.getTitle(),
                             entity.getContent(),
-                            entity.getTeam(),
+                            new TeamPostDTO(
+                                    entity.getTeam().getId(),
+                                    entity.getTeam().getTeamname()
+                            ),
                             entity.getCategory(),
                             new UserResponseDTO(
                                     entity.getAuthor().getId(),
@@ -93,7 +101,10 @@ public class PostService {
                     post.getId(),
                     post.getTitle(),
                     post.getContent(),
-                    post.getTeam(),
+                    new TeamPostDTO(
+                            post.getTeam().getId(),
+                            post.getTeam().getTeamname()
+                    ),
                     post.getCategory(),
                     new UserResponseDTO(
                             post.getAuthor().getId(),
@@ -115,9 +126,11 @@ public class PostService {
 
     public void createPost(PostDTO dto) {
         PostEntity entity = new PostEntity();
+        TeamEntity team = team_repository.findById(dto.getTeam());
+
         entity.setContent(dto.getContent());
         entity.setTitle(dto.getTitle());
-        entity.setTeam(dto.getTeam());
+        entity.setTeam(team);
         entity.setCategory(dto.getCategory());
 
         UserEntity user = user_repository.findById(dto.getAuthor());
@@ -130,9 +143,11 @@ public class PostService {
     public void updatePost(int id, PostDTO dto) {
         if (repository.existsById(id)) {
             PostEntity entity = repository.findById(id);
+            TeamEntity team = team_repository.findById(dto.getTeam());
+
             entity.setTitle(dto.getTitle());
             entity.setContent(dto.getContent());
-            entity.setTeam(dto.getTeam());
+            entity.setTeam(team);
             entity.setCategory(dto.getCategory());
             repository.save(entity);
         } else {

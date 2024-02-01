@@ -24,13 +24,17 @@ public class PostEntity extends BaseEntity {
     private int id;
     private String title;
     private String content;
-    private String team;
     private String category;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     @JsonBackReference
     private UserEntity author;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "team_id")
+    @JsonBackReference
+    private TeamEntity team;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     @JsonManagedReference

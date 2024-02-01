@@ -9,7 +9,7 @@ public class PostDTO {
     private int id;
     private String title;
     private String content;
-    private String team;
+    private int team;
     private String category;
     private int author;
 }

@@ -11,7 +11,7 @@ public class PostResponseDTO {
     private int id;
     private String title;
     private String content;
-    private String team;
+    private TeamPostDTO team;
     private String category;
     private UserResponseDTO author;
     private int like_count;
@@ -22,7 +22,7 @@ public class PostResponseDTO {
             int id,
             String title,
             String content,
-            String team,
+            TeamPostDTO team,
             String category,
             UserResponseDTO author,
             int like_count,
