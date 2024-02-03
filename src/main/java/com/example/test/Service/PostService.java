@@ -44,14 +44,7 @@ public class PostService {
                                 entity.getTeam().getTeamname()
                         ),
                         entity.getCategory(),
-                        new UserResponseDTO(
-                                entity.getAuthor().getId(),
-                                entity.getAuthor().getUsername(),
-                                entity.getAuthor().getEmail(),
-                                entity.getAuthor().getImage(),
-                                entity.getAuthor().getIntroduce(),
-                                entity.getAuthor().getTeam()
-                        ),
+                        UserResponseDTO.of(entity.getAuthor()),
                         entity.getLike().size(),
                         entity.getCreatedAt(),
                         entity.getUpdatedAt()))
@@ -76,14 +69,7 @@ public class PostService {
                                     entity.getTeam().getTeamname()
                             ),
                             entity.getCategory(),
-                            new UserResponseDTO(
-                                    entity.getAuthor().getId(),
-                                    entity.getAuthor().getUsername(),
-                                    entity.getAuthor().getEmail(),
-                                    entity.getAuthor().getImage(),
-                                    entity.getAuthor().getIntroduce(),
-                                    entity.getAuthor().getTeam()
-                            ),
+                            UserResponseDTO.of(entity.getAuthor()),
                             entity.getLike().size(),
                             entity.getCreatedAt(),
                             entity.getUpdatedAt()))
@@ -91,6 +77,34 @@ public class PostService {
             return new PageImpl<>(dtos, pageRequest, postbyUserPage.getTotalElements());
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found.");
+        }
+    }
+
+    public Page<PostResponseDTO> getPostbyTeam(int pageNo, int team_id) {
+        if (team_repository.existsById(team_id)) {
+            TeamEntity team = team_repository.findById(team_id);
+
+            int pageSize = 10;
+            PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+            Page<PostEntity> postbyTeamPage = repository.findByTeamOrderByCreatedAtDesc(pageRequest, team);
+            List<PostResponseDTO> dtos = postbyTeamPage.getContent().stream()
+                    .map(entity -> new PostResponseDTO(
+                            entity.getId(),
+                            entity.getTitle(),
+                            entity.getContent(),
+                            new TeamPostDTO(
+                                    entity.getTeam().getId(),
+                                    entity.getTeam().getTeamname()
+                            ),
+                            entity.getCategory(),
+                            UserResponseDTO.of(entity.getAuthor()),
+                            entity.getLike().size(),
+                            entity.getCreatedAt(),
+                            entity.getUpdatedAt()))
+                    .collect(Collectors.toList());
+            return new PageImpl<>(dtos, pageRequest, postbyTeamPage.getTotalElements());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found.");
         }
     }
 
@@ -106,14 +120,7 @@ public class PostService {
                             post.getTeam().getTeamname()
                     ),
                     post.getCategory(),
-                    new UserResponseDTO(
-                            post.getAuthor().getId(),
-                            post.getAuthor().getUsername(),
-                            post.getAuthor().getEmail(),
-                            post.getAuthor().getImage(),
-                            post.getAuthor().getIntroduce(),
-                            post.getAuthor().getTeam()
-                    ),
+                    UserResponseDTO.of(post.getAuthor()),
                     post.getLike().size(),
                     post.getCreatedAt(),
                     post.getUpdatedAt()

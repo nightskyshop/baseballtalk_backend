@@ -17,10 +17,6 @@ public class UserController {
     @GetMapping("/{id}")
     public UserResponseDTO getUser(@PathVariable int id) { return service.getUser(id); }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("")
-    public void createUser(@RequestBody UserDTO dto) { service.createUser(dto); }
-
     @PatchMapping("/{id}")
     public void updateUser(@PathVariable int id, @RequestBody UserDTO dto) { service.updateUser(id, dto); }
 

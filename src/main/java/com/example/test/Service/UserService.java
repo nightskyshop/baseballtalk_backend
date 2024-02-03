@@ -17,33 +17,17 @@ public class UserService {
     public UserResponseDTO getUser(int id) {
         if (repository.existsById(id)) {
             UserEntity entity = repository.findById(id);
-            UserResponseDTO dto = new UserResponseDTO(
-                    entity.getId(),
-                    entity.getUsername(),
-                    entity.getEmail(),
-                    entity.getImage(),
-                    entity.getIntroduce(),
-                    entity.getTeam()
-            );
+            UserResponseDTO dto = UserResponseDTO.of(entity);
             return dto;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found.");
         }
     }
 
-    public void createUser(UserDTO dto) {
-        UserEntity entity = new UserEntity();
-        entity.setUsername(dto.getUsername());
-        entity.setEmail(dto.getEmail());
-        entity.setPassword(dto.getPassword());
-        entity.setImage(dto.getImage());
-        entity.setTeam(dto.getTeam());
-        repository.save(entity);
-    }
-
     public void updateUser(int id, UserDTO dto) {
         if (repository.existsById(id)) {
             UserEntity entity = repository.findById(id);
+            entity.setUsername(dto.getUsername());
             entity.setEmail(dto.getEmail());
             entity.setImage(dto.getImage());
             entity.setIntroduce(dto.getIntroduce());

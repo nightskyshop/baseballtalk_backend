@@ -6,10 +6,48 @@ import com.example.test.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class TeamService {
     @Autowired
     private TeamRepository repository;
+
+    public List<TeamDTO> getAllTeam() {
+        List<TeamEntity> teamAll = repository.findAll();
+        List<TeamDTO> teamAllDTOList = teamAll.stream()
+                .map(entity -> new TeamDTO(
+                        entity.getId(),
+                        entity.getTeamname(),
+                        entity.getRank_num(),
+                        entity.getGame(),
+                        entity.getWin(),
+                        entity.getLose(),
+                        entity.getTie(),
+                        entity.getWinavg(),
+                        entity.getAvg(),
+                        entity.getEra()))
+                .collect(Collectors.toList());
+        return teamAllDTOList;
+    }
+
+    public TeamDTO getTeam(int team_id) {
+        TeamEntity team = repository.findById(team_id);
+
+        return new TeamDTO(
+                team.getId(),
+                team.getTeamname(),
+                team.getRank_num(),
+                team.getGame(),
+                team.getWin(),
+                team.getLose(),
+                team.getTie(),
+                team.getWinavg(),
+                team.getAvg(),
+                team.getEra()
+        );
+    }
 
     public void createTeam(TeamDTO dto) {
         TeamEntity entity = new TeamEntity();

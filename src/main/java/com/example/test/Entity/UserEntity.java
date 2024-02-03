@@ -38,6 +38,15 @@ public class UserEntity {
     private List<LikeEntity> like = new ArrayList<>();
 
     private String refresh_token;
+//    @Builder
+//    public UserEntity(String username, String email, String password, String image, String  introduce, String  team) {
+//        this.username = username;
+//        this.email = email;
+//        this.password = password;
+//        this.image = image;
+//        this.introduce = introduce;
+//        this.team = team;
+//    }
     @Builder
-    public UserEntity() {}
+    public UserEntity() {};
 }

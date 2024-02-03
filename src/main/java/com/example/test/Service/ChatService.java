@@ -42,14 +42,7 @@ public class ChatService {
                     .map(entity -> new ChatResponseDTO(
                             entity.getId(),
                             entity.getContent(),
-                            new UserResponseDTO(
-                                    entity.getAuthor().getId(),
-                                    entity.getAuthor().getUsername(),
-                                    entity.getAuthor().getEmail(),
-                                    entity.getAuthor().getImage(),
-                                    entity.getAuthor().getIntroduce(),
-                                    entity.getAuthor().getTeam()
-                            ),
+                            UserResponseDTO.of(entity.getAuthor()),
                             entity.getPost().getId(),
                             entity.getCreatedAt(),
                             entity.getUpdatedAt()))
@@ -71,14 +64,7 @@ public class ChatService {
                     .map(entity -> new ChatResponseDTO(
                             entity.getId(),
                             entity.getContent(),
-                            new UserResponseDTO(
-                                    entity.getAuthor().getId(),
-                                    entity.getAuthor().getUsername(),
-                                    entity.getAuthor().getEmail(),
-                                    entity.getAuthor().getImage(),
-                                    entity.getAuthor().getIntroduce(),
-                                    entity.getAuthor().getTeam()
-                            ),
+                            UserResponseDTO.of(entity.getAuthor()),
                             entity.getPost().getId(),
                             entity.getCreatedAt(),
                             entity.getUpdatedAt()))

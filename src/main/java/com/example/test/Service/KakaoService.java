@@ -76,7 +76,7 @@ public class KakaoService {
             jsonReader.close();
 
             accessToken = jsonObject.getString("access_token");
-            refreshToken = jsonObject.getString("access_token");
+            refreshToken = jsonObject.getString("refresh_token");
 
             System.out.println("access_token :" + accessToken);
             System.out.println("refresh_token :" + refreshToken);
@@ -124,9 +124,9 @@ public class KakaoService {
         Optional<UserEntity> existingUser = user_repository.findByEmail(kakaoUser.getEmail());
         if (existingUser.isPresent()) {
             UserEntity user = existingUser.get();
-            user.setUsername(kakaoUser.getNickname());
+//            user.setUsername(kakaoUser.getNickname());
+//            user.setImage(kakaoUser.getProfileImgUrl());
             user.setRefresh_token(refreshToken);
-            user.setImage(kakaoUser.getProfileImgUrl());
             return user_repository.save(user);
         } else {
             UserEntity newUser = new UserEntity();

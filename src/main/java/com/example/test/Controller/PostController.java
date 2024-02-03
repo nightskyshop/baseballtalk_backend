@@ -25,6 +25,9 @@ public class PostController {
     @GetMapping("/user/{user_id}")
     public Page<PostResponseDTO> getPostbyUser(@RequestParam int pageNo, @PathVariable int user_id) { return service.getPostbyUser(pageNo, user_id); }
 
+    @GetMapping("/team/{team_id}")
+    public Page<PostResponseDTO> getPostbyTeam(@RequestParam int pageNo, @PathVariable int team_id) { return service.getPostbyTeam(pageNo, team_id); }
+
     @GetMapping("/{id}")
     public PostResponseDTO getPost(@PathVariable int id) {
         return service.getPost(id);
