@@ -15,12 +15,12 @@ public class TeamService {
     private TeamRepository repository;
 
     public List<TeamDTO> getAllTeam() {
-        List<TeamEntity> teamAll = repository.findAll();
+        List<TeamEntity> teamAll = repository.findAllByOrderByRanknumDesc();
         List<TeamDTO> teamAllDTOList = teamAll.stream()
                 .map(entity -> new TeamDTO(
                         entity.getId(),
                         entity.getTeamname(),
-                        entity.getRank_num(),
+                        entity.getRanknum(),
                         entity.getGame(),
                         entity.getWin(),
                         entity.getLose(),
@@ -38,7 +38,7 @@ public class TeamService {
         return new TeamDTO(
                 team.getId(),
                 team.getTeamname(),
-                team.getRank_num(),
+                team.getRanknum(),
                 team.getGame(),
                 team.getWin(),
                 team.getLose(),
@@ -53,7 +53,7 @@ public class TeamService {
         TeamEntity entity = new TeamEntity();
 
         entity.setTeamname(dto.getTeamname());
-        entity.setRank_num(dto.getRank_num());
+        entity.setRanknum(dto.getRanknum());
         entity.setGame(dto.getGame());
         entity.setWin(dto.getWin());
         entity.setLose(dto.getLose());

@@ -5,11 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TeamPostDTO {
+public class TeamSmallDTO {
     private int id;
     private String teamname;
 
-    public TeamPostDTO(int id, String teamname) {
+    public TeamSmallDTO(int id, String teamname) {
         this.id = id;
         this.teamname = teamname;
     }

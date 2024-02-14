@@ -2,7 +2,7 @@ package com.example.test.Service;
 
 import com.example.test.DTO.PostDTO;
 import com.example.test.DTO.PostResponseDTO;
-import com.example.test.DTO.TeamPostDTO;
+import com.example.test.DTO.TeamSmallDTO;
 import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.PostEntity;
 import com.example.test.Entity.TeamEntity;
@@ -39,7 +39,7 @@ public class PostService {
                         entity.getId(),
                         entity.getTitle(),
                         entity.getContent(),
-                        new TeamPostDTO(
+                        new TeamSmallDTO(
                                 entity.getTeam().getId(),
                                 entity.getTeam().getTeamname()
                         ),
@@ -64,7 +64,7 @@ public class PostService {
                             entity.getId(),
                             entity.getTitle(),
                             entity.getContent(),
-                            new TeamPostDTO(
+                            new TeamSmallDTO(
                                     entity.getTeam().getId(),
                                     entity.getTeam().getTeamname()
                             ),
@@ -92,7 +92,7 @@ public class PostService {
                             entity.getId(),
                             entity.getTitle(),
                             entity.getContent(),
-                            new TeamPostDTO(
+                            new TeamSmallDTO(
                                     entity.getTeam().getId(),
                                     entity.getTeam().getTeamname()
                             ),
@@ -115,7 +115,7 @@ public class PostService {
                     post.getId(),
                     post.getTitle(),
                     post.getContent(),
-                    new TeamPostDTO(
+                    new TeamSmallDTO(
                             post.getTeam().getId(),
                             post.getTeam().getTeamname()
                     ),
@@ -133,18 +133,21 @@ public class PostService {
 
     public void createPost(PostDTO dto) {
         PostEntity entity = new PostEntity();
-        TeamEntity team = team_repository.findById(dto.getTeam());
+        if (team_repository.existsById(dto.getTeam())) {
+            TeamEntity team = team_repository.findById(dto.getTeam());
 
-        entity.setContent(dto.getContent());
-        entity.setTitle(dto.getTitle());
-        entity.setTeam(team);
-        entity.setCategory(dto.getCategory());
+            entity.setContent(dto.getContent());
+            entity.setTitle(dto.getTitle());
+            entity.setTeam(team);
+            entity.setCategory(dto.getCategory());
 
-        UserEntity user = user_repository.findById(dto.getAuthor());
-        entity.setAuthor(user);
-        entity.getAuthor().getId();
+            UserEntity user = user_repository.findById(dto.getAuthor());
+            entity.setAuthor(user);
 
-        repository.save(entity);
+            repository.save(entity);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found.");
+        }
     }
 
     public void updatePost(int id, PostDTO dto) {

@@ -16,7 +16,7 @@ public class TeamEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String teamname;
-    private int rank_num;
+    private int ranknum;
     private int game;
     private int win;
     private int lose;
@@ -28,4 +28,8 @@ public class TeamEntity {
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<PostEntity> post = new ArrayList<>();
+
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<PlayerEntity> player = new ArrayList<>();
 }
