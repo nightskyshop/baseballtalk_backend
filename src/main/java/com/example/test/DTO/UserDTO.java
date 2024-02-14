@@ -3,7 +3,6 @@ package com.example.test.DTO;
 import com.example.test.Entity.UserEntity;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
@@ -20,6 +19,8 @@ public class UserDTO {
         UserEntity user = new UserEntity();
         user.setUsername(username);
         user.setEmail(email);
+        System.out.println(password);
+        System.out.println(passwordEncoder.encode(password));
         user.setPassword(passwordEncoder.encode(password));
         user.setImage(image);
         user.setIntroduce(introduce);
