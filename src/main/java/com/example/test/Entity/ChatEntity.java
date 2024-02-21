@@ -34,7 +34,7 @@ public class ChatEntity extends BaseEntity {
     @JsonBackReference
     private PostEntity post;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<LikeEntity> like = new ArrayList<>();
 

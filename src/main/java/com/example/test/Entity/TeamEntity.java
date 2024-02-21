@@ -25,11 +25,11 @@ public class TeamEntity {
     private int avg;
     private float era;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<PostEntity> post = new ArrayList<>();
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<PlayerEntity> player = new ArrayList<>();
 }

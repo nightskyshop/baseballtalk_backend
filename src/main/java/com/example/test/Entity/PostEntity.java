@@ -36,11 +36,11 @@ public class PostEntity extends BaseEntity {
     @JsonBackReference
     private TeamEntity team;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<ChatEntity> chat = new ArrayList<>();
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<LikeEntity> like = new ArrayList<>();
 
