@@ -1,6 +1,7 @@
 package com.example.test.Entity;
 
 
+import com.example.test.Config.Authority;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -24,6 +25,7 @@ public class UserEntity {
     private String image;
     private String introduce;
     private String team;
+    private Authority authority;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     @JsonManagedReference

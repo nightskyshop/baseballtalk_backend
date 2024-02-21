@@ -3,22 +3,80 @@ package com.example.test.Controller;
 import com.example.test.DTO.UserDTO;
 import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.UserEntity;
+import com.example.test.JWT.TokenProvider;
+import com.example.test.Repository.UserRepository;
 import com.example.test.Service.UserService;
+import com.sun.net.httpserver.HttpsServer;
+import io.jsonwebtoken.ExpiredJwtException;
+import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.Token;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.swing.text.html.Option;
+import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserService service;
+    @Autowired
+    private UserRepository repository;
+    private final TokenProvider tokenProvider;
 
     @GetMapping("/{id}")
     public UserResponseDTO getUser(@PathVariable int id) { return service.getUser(id); }
 
+    @GetMapping("/my")
+    public UserResponseDTO getMyUser(@RequestHeader("Authorization") String accessToken) {
+        if (accessToken == null || !accessToken.startsWith("Bearer ")) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String token = accessToken.substring(7);
+        boolean isValid = tokenProvider.validateToken(token);
+
+        if (!isValid) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String tokenUserId = tokenProvider.getEmailFromToken(token);
+        int tokenId;
+        try {
+            tokenId = Integer.parseInt(tokenUserId);
+        } catch (Exception err) {
+            throw err;
+        }
+        System.out.println("TOKENNICKNAME: " + tokenId);
+        if (repository.existsById(tokenId)) {
+            UserEntity user = repository.findById(tokenId);
+
+            UserResponseDTO userDto = UserResponseDTO.of(user);
+            return userDto;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PatchMapping("/{id}")
-    public void updateUser(@PathVariable int id, @RequestBody UserDTO dto) { service.updateUser(id, dto); }
+    public void updateUser(@PathVariable int id, @RequestHeader("Authorization") String accessToken, @RequestBody UserDTO dto) {
+        if (accessToken == null || !accessToken.startsWith("Bearer ")) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String token = accessToken.substring(7);
+        boolean isValid = tokenProvider.validateToken(token);
+        if (!isValid) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        service.updateUser(id, dto);
+    }
 
     @PatchMapping("/{id}/password")
     public void updatePassword(@PathVariable int id, @RequestBody UserDTO dto) { service.updatePassword(id, dto); }

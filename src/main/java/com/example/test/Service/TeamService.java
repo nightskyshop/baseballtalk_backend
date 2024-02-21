@@ -15,7 +15,7 @@ public class TeamService {
     private TeamRepository repository;
 
     public List<TeamDTO> getAllTeam() {
-        List<TeamEntity> teamAll = repository.findAllByOrderByRanknumDesc();
+        List<TeamEntity> teamAll = repository.findAllByOrderByRanknumAsc();
         List<TeamDTO> teamAllDTOList = teamAll.stream()
                 .map(entity -> new TeamDTO(
                         entity.getId(),

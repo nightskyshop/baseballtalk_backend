@@ -111,6 +111,7 @@ public class PostService {
     public PostResponseDTO getPost(int id) {
         if (repository.existsById(id)) {
             PostEntity post = repository.findById(id);
+            System.out.println("GETLIKE " + post.getLike().size());
             PostResponseDTO dto = new PostResponseDTO(
                     post.getId(),
                     post.getTitle(),
