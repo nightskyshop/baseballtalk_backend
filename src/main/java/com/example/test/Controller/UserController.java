@@ -1,5 +1,6 @@
 package com.example.test.Controller;
 
+import com.example.test.DTO.PasswordDTO;
 import com.example.test.DTO.UserDTO;
 import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.UserEntity;
@@ -45,7 +46,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        String tokenUserId = tokenProvider.getEmailFromToken(token);
+        String tokenUserId = tokenProvider.getUserIdFromToken(token);
         int tokenId;
         try {
             tokenId = Integer.parseInt(tokenUserId);
@@ -75,9 +76,49 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
+        String userId = tokenProvider.getUserIdFromToken(token);
+        int tokenId;
+
+        try {
+            tokenId = Integer.parseInt(userId);
+        } catch (Exception err) {
+            throw err;
+        }
+
+        if (tokenId != id) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다.");
+        }
+
         service.updateUser(id, dto);
     }
 
     @PatchMapping("/{id}/password")
-    public void updatePassword(@PathVariable int id, @RequestBody UserDTO dto) { service.updatePassword(id, dto); }
+    public void updatePassword(@PathVariable int id, @RequestHeader("Authorization") String accessToken, @RequestBody PasswordDTO dto) {
+        if (accessToken == null || !accessToken.startsWith("Bearer ")) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String token = accessToken.substring(7);
+        boolean isValid = tokenProvider.validateToken(token);
+
+        if (!isValid) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String userId = tokenProvider.getUserIdFromToken(token);
+        int tokenId;
+
+        try {
+            tokenId = Integer.parseInt(userId);
+        } catch (Exception err) {
+            throw err;
+        }
+
+        System.out.println("tokenId: " + tokenId + ", id: " + id);
+        if (tokenId != id) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다.");
+        }
+
+        service.updatePassword(id, dto);
+    }
 }

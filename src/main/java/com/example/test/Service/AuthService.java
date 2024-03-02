@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 import static com.example.test.Config.Authority.ROLE_USER;
 
 @Service
@@ -43,7 +45,18 @@ public class AuthService {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
         System.out.println("login1");
         System.out.println(authenticationToken);
-        Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+        Authentication authentication;
+
+        if (passwordEncoder.matches(requestDto.getPassword(), userRepository.findByEmail(requestDto.getEmail()).get().getPassword())) {
+            System.out.println("ddd");
+        }
+
+        try {
+            authentication = managerBuilder.getObject().authenticate(authenticationToken);
+        } catch (Exception err) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 혹은 비밀번호가 틀립니다.");
+        }
+
         System.out.println(authentication);
         System.out.println("login2");
         return tokenProvider.generateTokenDto(authentication);

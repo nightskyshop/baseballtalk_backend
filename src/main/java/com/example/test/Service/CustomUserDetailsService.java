@@ -23,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " 을 DB에서 찾을 수 없습니다"));
     }
+
     private UserDetails createUserDetails(UserEntity userEntity) {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(userEntity.getAuthority().toString());
         return new User(

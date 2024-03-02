@@ -1,18 +1,23 @@
 package com.example.test.Service;
 
+import com.example.test.DTO.PasswordDTO;
 import com.example.test.DTO.UserDTO;
 import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.UserEntity;
 import com.example.test.Repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     @Autowired
     private UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDTO getUser(int id) {
         if (repository.existsById(id)) {
@@ -37,11 +42,26 @@ public class UserService {
         }
     }
 
-    public void updatePassword(int id, UserDTO dto) {
+    public void updatePassword(int id, PasswordDTO dto) {
         if (repository.existsById(id)) {
             UserEntity entity = repository.findById(id);
-            entity.setPassword(dto.getPassword());
-            repository.save(entity);
+            if (passwordEncoder.matches(dto.getOldPassword(), entity.getPassword())) {
+                UserDTO userDto = new UserDTO(
+                        id,
+                        entity.getUsername(),
+                        entity.getEmail(),
+                        dto.getNewPassword(),
+                        entity.getImage(),
+                        entity.getIntroduce(),
+                        entity.getTeam()
+                );
+
+                System.out.println(userDto.getPassword());
+
+                repository.save(userDto.toUser(passwordEncoder));
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다.");
+            }
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found.");
         }

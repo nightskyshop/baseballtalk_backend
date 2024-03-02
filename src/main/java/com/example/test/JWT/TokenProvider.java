@@ -92,7 +92,7 @@ public class TokenProvider {
         }
     }
 
-    public String getEmailFromToken(String token) {
+    public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         return claims.getSubject();
     }
