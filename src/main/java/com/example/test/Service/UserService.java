@@ -47,7 +47,7 @@ public class UserService {
             UserEntity entity = repository.findById(id);
             if (passwordEncoder.matches(dto.getOldPassword(), entity.getPassword())) {
                 UserDTO userDto = new UserDTO(
-                        id,
+                        entity,
                         entity.getUsername(),
                         entity.getEmail(),
                         dto.getNewPassword(),

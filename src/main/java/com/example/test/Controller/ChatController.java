@@ -78,4 +78,36 @@ public class ChatController {
 
         service.updateChat(id, dto);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deletePost(@PathVariable int id, @RequestHeader("Authorization") String accessToken) {
+        if (accessToken == null || !accessToken.startsWith("Bearer ")) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "JWT 토큰이 전달되지 않았습니다.");
+        }
+
+        String token = accessToken.substring(7);
+        boolean isValid = tokenProvider.validateToken(token);
+
+        if (!isValid) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "JWT 토큰이 유효하지 않습니다.");
+        }
+
+        String userId = tokenProvider.getUserIdFromToken(token);
+        int tokenId;
+
+        try {
+            tokenId = Integer.parseInt(userId);
+        } catch (Exception err) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자의 ID를 확인할 수 없습니다.");
+        }
+
+        ChatEntity chat = chatRepository.findById(id);
+
+        if (tokenId != chat.getAuthor().getId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다.");
+        }
+
+        service.deleteChat(id);
+    }
 }
