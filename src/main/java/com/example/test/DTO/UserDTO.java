@@ -1,11 +1,9 @@
 package com.example.test.DTO;
 
 import com.example.test.Entity.UserEntity;
-import com.example.test.Repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

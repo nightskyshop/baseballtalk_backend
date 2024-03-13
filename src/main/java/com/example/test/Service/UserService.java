@@ -2,6 +2,7 @@ package com.example.test.Service;
 
 import com.example.test.DTO.PasswordDTO;
 import com.example.test.DTO.UserDTO;
+import com.example.test.DTO.UserProfileDTO;
 import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.UserEntity;
 import com.example.test.Repository.UserRepository;
@@ -29,7 +30,7 @@ public class UserService {
         }
     }
 
-    public void updateUser(int id, UserDTO dto) {
+    public void updateUser(int id, UserProfileDTO dto) {
         if (repository.existsById(id)) {
             UserEntity entity = repository.findById(id);
             entity.setUsername(dto.getUsername());

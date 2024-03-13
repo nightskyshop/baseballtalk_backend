@@ -48,7 +48,7 @@ public class ChatController {
         service.createChat(dto);
     }
 
-    @PostMapping("/{id}")
+    @PatchMapping("/{id}")
     public void updateChat(@PathVariable int id, @RequestHeader("Authorization") String accessToken, @RequestBody ChatDTO dto) {
         if (accessToken == null || !accessToken.startsWith("Bearer ")) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "JWT 토큰이 전달되지 않았습니다.");

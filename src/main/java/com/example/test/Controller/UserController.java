@@ -2,6 +2,7 @@ package com.example.test.Controller;
 
 import com.example.test.DTO.PasswordDTO;
 import com.example.test.DTO.UserDTO;
+import com.example.test.DTO.UserProfileDTO;
 import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.UserEntity;
 import com.example.test.JWT.TokenProvider;
@@ -58,15 +59,14 @@ public class UserController {
         if (repository.existsById(tokenId)) {
             UserEntity user = repository.findById(tokenId);
 
-            UserResponseDTO userDto = UserResponseDTO.of(user);
-            return userDto;
+            return UserResponseDTO.of(user);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
     @PatchMapping("/{id}")
-    public void updateUser(@PathVariable int id, @RequestHeader("Authorization") String accessToken, @RequestBody UserDTO dto) {
+    public void updateUser(@PathVariable int id, @RequestHeader("Authorization") String accessToken, @RequestBody UserProfileDTO dto) {
         if (accessToken == null || !accessToken.startsWith("Bearer ")) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "JWT 토큰이 전달되지 않았습니다.");
         }
