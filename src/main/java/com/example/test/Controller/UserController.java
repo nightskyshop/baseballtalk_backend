@@ -1,25 +1,17 @@
 package com.example.test.Controller;
 
 import com.example.test.DTO.PasswordDTO;
-import com.example.test.DTO.UserDTO;
-import com.example.test.DTO.UserProfileDTO;
+import com.example.test.DTO.UserRequestDTO;
 import com.example.test.DTO.UserResponseDTO;
 import com.example.test.Entity.UserEntity;
 import com.example.test.JWT.TokenProvider;
 import com.example.test.Repository.UserRepository;
 import com.example.test.Service.UserService;
-import com.sun.net.httpserver.HttpsServer;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.Token;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.swing.text.html.Option;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,7 +58,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public void updateUser(@PathVariable int id, @RequestHeader("Authorization") String accessToken, @RequestBody UserProfileDTO dto) {
+    public void updateUser(@PathVariable int id, @RequestHeader("Authorization") String accessToken, @RequestBody UserRequestDTO dto) {
         if (accessToken == null || !accessToken.startsWith("Bearer ")) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "JWT 토큰이 전달되지 않았습니다.");
         }

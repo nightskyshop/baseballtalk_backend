@@ -1,9 +1,6 @@
 package com.example.test.Service;
 
-import com.example.test.DTO.LoginDTO;
-import com.example.test.DTO.TokenDTO;
-import com.example.test.DTO.UserDTO;
-import com.example.test.DTO.UserResponseDTO;
+import com.example.test.DTO.*;
 import com.example.test.Entity.UserEntity;
 import com.example.test.JWT.TokenProvider;
 import com.example.test.Repository.UserRepository;
@@ -31,7 +28,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
-    public UserResponseDTO signup(UserDTO requestDto) {
+    public UserResponseDTO signup(UserRequestDTO requestDto) {
         if (userRepository.existsByUsername(requestDto.getUsername()) || userRepository.existsByEmail(requestDto.getEmail())) {
             throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, "이미 가입되어 있는 유저입니다.");
         }

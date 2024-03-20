@@ -49,18 +49,33 @@ public class TeamService {
         );
     }
 
-    public void createTeam(TeamDTO dto) {
-        TeamEntity entity = new TeamEntity();
+    public void createUpdateTeam(TeamDTO dto) {
+        TeamEntity entity;
+        if (repository.existsByTeamname(dto.getTeamname())) {
+            entity = repository.findByTeamname(dto.getTeamname());
 
-        entity.setTeamname(dto.getTeamname());
-        entity.setRanknum(dto.getRanknum());
-        entity.setGame(dto.getGame());
-        entity.setWin(dto.getWin());
-        entity.setLose(dto.getLose());
-        entity.setTie(dto.getTie());
-        entity.setWinavg(dto.getWinavg());
-        entity.setAvg(dto.getAvg());
-        entity.setEra(dto.getEra());
+            entity.setTeamname(dto.getTeamname());
+            entity.setRanknum(dto.getRanknum());
+            entity.setGame(dto.getGame());
+            entity.setWin(dto.getWin());
+            entity.setLose(dto.getLose());
+            entity.setTie(dto.getTie());
+            entity.setWinavg(dto.getWinavg());
+            entity.setAvg(dto.getAvg());
+            entity.setEra(dto.getEra());
+        } else {
+            entity = new TeamEntity();
+
+            entity.setTeamname(dto.getTeamname());
+            entity.setRanknum(dto.getRanknum());
+            entity.setGame(dto.getGame());
+            entity.setWin(dto.getWin());
+            entity.setLose(dto.getLose());
+            entity.setTie(dto.getTie());
+            entity.setWinavg(dto.getWinavg());
+            entity.setAvg(dto.getAvg());
+            entity.setEra(dto.getEra());
+        }
 
         repository.save(entity);
     }

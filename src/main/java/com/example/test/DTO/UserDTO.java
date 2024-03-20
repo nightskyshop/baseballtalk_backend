@@ -20,28 +20,15 @@ public class UserDTO {
     private String team;
 
     public UserEntity toUser(PasswordEncoder passwordEncoder) {
-        if (user != null) {
-            user.setUsername(username);
-            user.setEmail(email);
-            System.out.println(password);
-            System.out.println(passwordEncoder.encode(password));
-            user.setPassword(passwordEncoder.encode(password));
-            user.setImage(image);
-            user.setIntroduce(introduce);
-            user.setTeam(team);
-            return user;
-        } else {
-            UserEntity new_user = new UserEntity();
-            new_user.setUsername(username);
-            new_user.setEmail(email);
-            System.out.println(password);
-            System.out.println(passwordEncoder.encode(password));
-            new_user.setPassword(passwordEncoder.encode(password));
-            new_user.setImage(image);
-            new_user.setIntroduce(introduce);
-            new_user.setTeam(team);
-            return new_user;
-        }
+        user.setUsername(username);
+        user.setEmail(email);
+        System.out.println(password);
+        System.out.println(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(password));
+        user.setImage(image);
+        user.setIntroduce(introduce);
+        user.setTeam(team);
+        return user;
     }
 
     public UsernamePasswordAuthenticationToken toAuthentication() {

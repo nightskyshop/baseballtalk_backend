@@ -20,5 +20,5 @@ public class TeamController {
     public TeamDTO getTeam(@PathVariable int team_id) { return service.getTeam(team_id); }
 
     @PostMapping("")
-    public void createTeam(@RequestBody TeamDTO dto) { service.createTeam(dto); }
+    public void createUpdateTeam(@RequestBody TeamDTO dto) { service.createUpdateTeam(dto); }
 }

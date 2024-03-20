@@ -3,6 +3,7 @@ package com.example.test.Controller;
 import com.example.test.DTO.LoginDTO;
 import com.example.test.DTO.TokenDTO;
 import com.example.test.DTO.UserDTO;
+import com.example.test.DTO.UserRequestDTO;
 import com.example.test.Service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,11 +24,10 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
-    public void signup(@RequestBody UserDTO user) { service.signup(user); }
+    public void signup(@RequestBody UserRequestDTO user) { service.signup(user); }
 
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody LoginDTO loginDTO) {
-        System.out.println("dd");
         System.out.println(loginDTO.getEmail());
         System.out.println(loginDTO.getPassword());
         return ResponseEntity.ok(service.login(loginDTO));

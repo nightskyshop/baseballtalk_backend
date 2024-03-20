@@ -8,4 +8,6 @@ import java.util.List;
 public interface TeamRepository extends JpaRepository<TeamEntity, Integer> {
     List<TeamEntity> findAllByOrderByRanknumAsc();
     TeamEntity findById(int id);
+    TeamEntity findByTeamname(String teamname);
+    boolean existsByTeamname(String teamname);
 }
