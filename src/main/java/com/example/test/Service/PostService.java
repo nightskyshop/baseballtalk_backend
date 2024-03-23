@@ -41,7 +41,8 @@ public class PostService {
                         entity.getContent(),
                         new TeamSmallDTO(
                                 entity.getTeam().getId(),
-                                entity.getTeam().getTeamname()
+                                entity.getTeam().getTeamname(),
+                                entity.getTeam().getTeamnameEn()
                         ),
                         entity.getCategory(),
                         UserResponseDTO.of(entity.getAuthor()),
@@ -66,7 +67,8 @@ public class PostService {
                             entity.getContent(),
                             new TeamSmallDTO(
                                     entity.getTeam().getId(),
-                                    entity.getTeam().getTeamname()
+                                    entity.getTeam().getTeamname(),
+                                    entity.getTeam().getTeamnameEn()
                             ),
                             entity.getCategory(),
                             UserResponseDTO.of(entity.getAuthor()),
@@ -94,7 +96,8 @@ public class PostService {
                             entity.getContent(),
                             new TeamSmallDTO(
                                     entity.getTeam().getId(),
-                                    entity.getTeam().getTeamname()
+                                    entity.getTeam().getTeamname(),
+                                    entity.getTeam().getTeamnameEn()
                             ),
                             entity.getCategory(),
                             UserResponseDTO.of(entity.getAuthor()),
@@ -117,7 +120,8 @@ public class PostService {
                     post.getContent(),
                     new TeamSmallDTO(
                             post.getTeam().getId(),
-                            post.getTeam().getTeamname()
+                            post.getTeam().getTeamname(),
+                            post.getTeam().getTeamnameEn()
                     ),
                     post.getCategory(),
                     UserResponseDTO.of(post.getAuthor()),

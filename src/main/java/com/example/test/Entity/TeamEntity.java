@@ -16,6 +16,7 @@ public class TeamEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String teamname;
+    private String teamnameEn;
     private int ranknum;
     private int game;
     private int win;

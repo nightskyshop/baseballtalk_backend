@@ -31,7 +31,8 @@ public class PlayerService {
                     player.getImage(),
                     new TeamSmallDTO(
                             player.getTeam().getId(),
-                            player.getTeam().getTeamname()
+                            player.getTeam().getTeamname(),
+                            player.getTeam().getTeamnameEn()
                     )
             );
             return dto;

@@ -20,6 +20,7 @@ public class TeamService {
                 .map(entity -> new TeamDTO(
                         entity.getId(),
                         entity.getTeamname(),
+                        entity.getTeamnameEn(),
                         entity.getRanknum(),
                         entity.getGame(),
                         entity.getWin(),
@@ -38,6 +39,7 @@ public class TeamService {
         return new TeamDTO(
                 team.getId(),
                 team.getTeamname(),
+                team.getTeamnameEn(),
                 team.getRanknum(),
                 team.getGame(),
                 team.getWin(),
