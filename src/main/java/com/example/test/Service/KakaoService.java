@@ -1,21 +1,26 @@
 package com.example.test.Service;
 
-import com.example.test.DTO.KakaoDTO;
+import com.example.test.DTO.*;
 import com.example.test.Entity.UserEntity;
+import com.example.test.JWT.TokenProvider;
 import com.example.test.Repository.UserRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONObject;
 import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -26,8 +31,16 @@ import java.lang.reflect.Member;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.example.test.Config.Authority.ROLE_USER;
+
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class KakaoService {
+    private final AuthenticationManagerBuilder managerBuilder;
+    private final TokenProvider tokenProvider;
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
     private UserRepository user_repository;
 
@@ -42,7 +55,7 @@ public class KakaoService {
 
     private final static String KAKAO_API_URI = "https://kapi.kakao.com";
 
-    public String getKakaoInfo(String code) throws Exception {
+    public TokenDTO getKakaoInfo(String code) throws Exception {
         if (code == null) throw new Exception("Failed get authorization code");
 
         String accessToken = "";
@@ -83,12 +96,11 @@ public class KakaoService {
         } catch (Exception e) {
             throw e;
         }
-        getUserInfoWithToken(accessToken, refreshToken);
 
-        return accessToken;
+        return getUserInfoWithToken(accessToken, refreshToken);
     }
 
-    private UserEntity getUserInfoWithToken(String accessToken, String refreshToken) throws Exception {
+    private TokenDTO getUserInfoWithToken(String accessToken, String refreshToken) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -119,7 +131,7 @@ public class KakaoService {
         return saveKakao(kakaoUser, refreshToken);
     }
 
-    public UserEntity saveKakao(KakaoDTO kakaoUser, String refreshToken) {
+    public TokenDTO saveKakao(KakaoDTO kakaoUser, String refreshToken) {
         System.out.println("save User in member repo");
         Optional<UserEntity> existingUser = user_repository.findByEmail(kakaoUser.getEmail());
         if (existingUser.isPresent()) {
@@ -127,15 +139,53 @@ public class KakaoService {
 //            user.setUsername(kakaoUser.getNickname());
 //            user.setImage(kakaoUser.getProfileImgUrl());
             user.setRefresh_token(refreshToken);
-            return user_repository.save(user);
+
+            LoginDTO requestDto = new LoginDTO();
+            requestDto.setEmail(kakaoUser.getEmail());
+            requestDto.setPassword("1111");
+
+            UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+            Authentication authentication;
+
+            try {
+                authentication = managerBuilder.getObject().authenticate(authenticationToken);
+            } catch (Exception err) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 혹은 비밀번호가 틀립니다.");
+            }
+
+            System.out.println(authentication);
+
+            user_repository.save(user);
+
+            return tokenProvider.generateTokenDto(authentication);
         } else {
-            UserEntity newUser = new UserEntity();
-            newUser.setPassword("1111");
-            newUser.setEmail(kakaoUser.getEmail());
-            newUser.setUsername(kakaoUser.getNickname());
+            UserRequestDTO userRequestDTO = new UserRequestDTO();
+            userRequestDTO.setUsername(kakaoUser.getNickname());
+            userRequestDTO.setEmail(kakaoUser.getEmail());
+            userRequestDTO.setPassword("1111");
+            userRequestDTO.setImage(kakaoUser.getProfileImgUrl());
+
+            UserEntity newUser = userRequestDTO.toUser(passwordEncoder);
             newUser.setRefresh_token(refreshToken);
-            newUser.setImage(kakaoUser.getProfileImgUrl());
-            return user_repository.save(newUser);
+            newUser.setAuthority(ROLE_USER);
+            user_repository.save(newUser);
+
+            LoginDTO requestDto = new LoginDTO();
+            requestDto.setEmail(kakaoUser.getEmail());
+            requestDto.setPassword("1111");
+
+            UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+            Authentication authentication;
+
+            try {
+                authentication = managerBuilder.getObject().authenticate(authenticationToken);
+            } catch (Exception err) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 혹은 비밀번호가 틀립니다.");
+            }
+
+            System.out.println(authentication);
+
+            return tokenProvider.generateTokenDto(authentication);
         }
     }
 }

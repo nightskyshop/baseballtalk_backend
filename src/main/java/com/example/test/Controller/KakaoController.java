@@ -1,5 +1,6 @@
 package com.example.test.Controller;
 
+import com.example.test.DTO.TokenDTO;
 import com.example.test.Entity.UserEntity;
 import com.example.test.Service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ public class KakaoController {
     private final KakaoService kakaoService;
 
     @GetMapping("/{code}")
-    public String redirect(@PathVariable String code) throws Exception {
+    public TokenDTO redirect(@PathVariable String code) throws Exception {
         System.out.println("auth code:" + code);
         return kakaoService.getKakaoInfo(code);
     }

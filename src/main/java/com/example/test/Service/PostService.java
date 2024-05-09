@@ -31,7 +31,7 @@ public class PostService {
     private TeamRepository team_repository;
 
     public Page<PostResponseDTO> getAllPost(int pageNo) {
-        int pageSize = 10;
+        int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
         Page<PostEntity> postAllPage = repository.findAllByOrderByCreatedAtDesc(pageRequest);
         List<PostResponseDTO> dtos = postAllPage.getContent().stream()
@@ -57,7 +57,7 @@ public class PostService {
         if (user_repository.existsById(user_id)) {
             UserEntity author = user_repository.findById(user_id);
 
-            int pageSize = 10;
+            int pageSize = 5;
             PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
             Page<PostEntity> postbyUserPage = repository.findByAuthorOrderByCreatedAtDesc(pageRequest, author);
             List<PostResponseDTO> dtos = postbyUserPage.getContent().stream()
@@ -86,7 +86,7 @@ public class PostService {
         if (team_repository.existsById(team_id)) {
             TeamEntity team = team_repository.findById(team_id);
 
-            int pageSize = 10;
+            int pageSize = 5;
             PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
             Page<PostEntity> postbyTeamPage = repository.findByTeamOrderByCreatedAtDesc(pageRequest, team);
             List<PostResponseDTO> dtos = postbyTeamPage.getContent().stream()
