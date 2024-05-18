@@ -9,7 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class PlayerEntity {
+public class PitcherEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -19,6 +19,12 @@ public class PlayerEntity {
     private int height;
     private int weight;
     private String image;
+    private float era;
+    private int game;
+    private int win;
+    private int lose;
+    private int save;
+    private int hold;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id")
@@ -26,5 +32,5 @@ public class PlayerEntity {
     private TeamEntity team;
 
     @Builder
-    public PlayerEntity(){}
+    public PitcherEntity(){}
 }

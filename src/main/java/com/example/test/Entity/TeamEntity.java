@@ -32,5 +32,9 @@ public class TeamEntity {
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<PlayerEntity> player = new ArrayList<>();
+    private List<HitterEntity> hitter = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<PitcherEntity> pitcher = new ArrayList<>();
 }
