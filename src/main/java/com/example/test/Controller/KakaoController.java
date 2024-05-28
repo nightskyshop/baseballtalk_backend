@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
-@RestController
-@RequiredArgsConstructor
-@RequestMapping("/kakao")
-public class KakaoController {
-    private final KakaoService kakaoService;
-
-    @GetMapping("/{code}")
-    public TokenDTO redirect(@PathVariable String code) throws Exception {
-        System.out.println("auth code:" + code);
-        return kakaoService.getKakaoInfo(code);
-    }
-}
+//@RestController
+//@RequiredArgsConstructor
+//@RequestMapping("/kakao")
+//public class KakaoController {
+//    private final KakaoService kakaoService;
+//
+//    @GetMapping("/{code}")
+//    public TokenDTO redirect(@PathVariable String code) throws Exception {
+//        System.out.println("auth code:" + code);
+//        return kakaoService.getKakaoInfo(code);
+//    }
+//}
