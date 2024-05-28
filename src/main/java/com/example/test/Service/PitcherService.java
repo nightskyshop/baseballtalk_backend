@@ -6,9 +6,15 @@ import com.example.test.Entity.TeamEntity;
 import com.example.test.Repository.PitcherRepository;
 import com.example.test.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PitcherService {
@@ -17,6 +23,62 @@ public class PitcherService {
     @Autowired
     private TeamRepository team_repository;
 
+    public Page<PitcherResponseDTO> getAllPitcher(int pageNo) {
+        int pageSize = 5;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<PitcherEntity> pitcherAllPage = repository.findAll(pageRequest);
+        List<PitcherResponseDTO> dtos = pitcherAllPage.getContent().stream()
+                .map(entity -> new PitcherResponseDTO(
+                        entity.getId(),
+                        entity.getName(),
+                        entity.getAge(),
+                        entity.getHeight(),
+                        entity.getWeight(),
+                        entity.getImage(),
+                        entity.getEra(),
+                        entity.getGame(),
+                        entity.getInning(),
+                        entity.getWin(),
+                        entity.getLose(),
+                        entity.getSave(),
+                        entity.getHold(),
+                        new TeamSmallDTO(
+                                entity.getTeam().getId(),
+                                entity.getTeam().getTeamname(),
+                                entity.getTeam().getTeamnameEn()
+                        )))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageRequest, pitcherAllPage.getTotalElements());
+    }
+
+    public Page<PitcherResponseDTO> getAllPitcherByEra(int pageNo) {
+        int pageSize = 5;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<PitcherEntity> pitcherbyEraPage = repository.findAllByOrderByEraAsc(pageRequest);
+        List<PitcherResponseDTO> dtos = pitcherbyEraPage.getContent().stream()
+                .map(entity -> new PitcherResponseDTO(
+                        entity.getId(),
+                        entity.getName(),
+                        entity.getAge(),
+                        entity.getHeight(),
+                        entity.getWeight(),
+                        entity.getImage(),
+                        entity.getEra(),
+                        entity.getGame(),
+                        entity.getInning(),
+                        entity.getWin(),
+                        entity.getLose(),
+                        entity.getSave(),
+                        entity.getHold(),
+                        new TeamSmallDTO(
+                                entity.getTeam().getId(),
+                                entity.getTeam().getTeamname(),
+                                entity.getTeam().getTeamnameEn()
+                        )))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageRequest, pitcherbyEraPage.getTotalElements());
+    }
+
     public PitcherResponseDTO getPitcher(int id) {
         if (repository.existsById(id)) {
             PitcherEntity pitcher = repository.findById(id);
@@ -24,10 +86,12 @@ public class PitcherService {
                     pitcher.getId(),
                     pitcher.getName(),
                     pitcher.getAge(),
+                    pitcher.getHeight(),
                     pitcher.getWeight(),
                     pitcher.getImage(),
                     pitcher.getEra(),
                     pitcher.getGame(),
+                    pitcher.getInning(),
                     pitcher.getWin(),
                     pitcher.getLose(),
                     pitcher.getSave(),
@@ -45,9 +109,17 @@ public class PitcherService {
     }
 
     public void createPitcher(PitcherDTO dto) {
-        PitcherEntity entity = new PitcherEntity();
+        PitcherEntity entity;
         if (team_repository.existsById(dto.getTeam())) {
             TeamEntity team = team_repository.findById(dto.getTeam());
+
+            if (repository.existsByNameAndTeam(dto.getName(), team)) {
+                entity = repository.findByNameAndTeam(dto.getName(), team);
+            } else {
+                entity = new PitcherEntity();
+
+                entity.setTeam(team);
+            }
 
             entity.setName(dto.getName());
             entity.setAge(dto.getAge());
@@ -60,8 +132,6 @@ public class PitcherService {
             entity.setLose(dto.getLose());
             entity.setSave(dto.getSave());
             entity.setHold(dto.getHold());
-
-            entity.setTeam(team);
 
             repository.save(entity);
         } else {

@@ -8,9 +8,15 @@ import com.example.test.Entity.TeamEntity;
 import com.example.test.Repository.HitterRepository;
 import com.example.test.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HitterService {
@@ -19,6 +25,68 @@ public class HitterService {
     @Autowired
     private TeamRepository team_repository;
 
+    public Page<HitterResponseDTO> getAllHitter(int pageNo) {
+        int pageSize = 5;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<HitterEntity> hitterAllPage = repository.findAll(pageRequest);
+        List<HitterResponseDTO> dtos = hitterAllPage.getContent().stream()
+                .map(entity -> new HitterResponseDTO(
+                        entity.getId(),
+                        entity.getName(),
+                        entity.getAge(),
+                        entity.getHeight(),
+                        entity.getWeight(),
+                        entity.getImage(),
+                        entity.getAvg(),
+                        entity.getSlg(),
+                        entity.getObp(),
+                        entity.getOps(),
+                        entity.getGame(),
+                        entity.getHit(),
+                        entity.getSecondHit(),
+                        entity.getThirdHit(),
+                        entity.getHomeRun(),
+                        entity.getRbi(),
+                        new TeamSmallDTO(
+                                entity.getTeam().getId(),
+                                entity.getTeam().getTeamname(),
+                                entity.getTeam().getTeamnameEn()
+                        )))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageRequest, hitterAllPage.getTotalElements());
+    }
+
+    public Page<HitterResponseDTO> getAllHitterByAvg(int pageNo) {
+        int pageSize = 5;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<HitterEntity> hitterbyAvgPage = repository.findAllByOrderByAvgDesc(pageRequest);
+        List<HitterResponseDTO> dtos = hitterbyAvgPage.getContent().stream()
+                .map(entity -> new HitterResponseDTO(
+                        entity.getId(),
+                        entity.getName(),
+                        entity.getAge(),
+                        entity.getHeight(),
+                        entity.getWeight(),
+                        entity.getImage(),
+                        entity.getAvg(),
+                        entity.getSlg(),
+                        entity.getObp(),
+                        entity.getOps(),
+                        entity.getGame(),
+                        entity.getHit(),
+                        entity.getSecondHit(),
+                        entity.getThirdHit(),
+                        entity.getHomeRun(),
+                        entity.getRbi(),
+                        new TeamSmallDTO(
+                                entity.getTeam().getId(),
+                                entity.getTeam().getTeamname(),
+                                entity.getTeam().getTeamnameEn()
+                        )))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageRequest, hitterbyAvgPage.getTotalElements());
+    }
+
     public HitterResponseDTO getHitter(int id) {
         if (repository.existsById(id)) {
             HitterEntity hitter = repository.findById(id);
@@ -26,6 +94,7 @@ public class HitterService {
                     hitter.getId(),
                     hitter.getName(),
                     hitter.getAge(),
+                    hitter.getHeight(),
                     hitter.getWeight(),
                     hitter.getImage(),
                     hitter.getAvg(),
@@ -51,14 +120,22 @@ public class HitterService {
     }
 
     public void createHitter(HitterDTO dto) {
-        HitterEntity entity = new HitterEntity();
+        HitterEntity entity;
         if (team_repository.existsById(dto.getTeam())) {
             TeamEntity team = team_repository.findById(dto.getTeam());
 
+            if (repository.existsByNameAndTeam(dto.getName(), team)) {
+                entity = repository.findByNameAndTeam(dto.getName(), team);
+            } else {
+                entity = new HitterEntity();
+
+                entity.setTeam(team);
+            }
 
             entity.setName(dto.getName());
             entity.setAge(dto.getAge());
             entity.setWeight(dto.getWeight());
+            entity.setHeight(dto.getHeight());
             entity.setImage(dto.getImage());
             entity.setAvg(dto.getAvg());
             entity.setSlg(dto.getSlg());
@@ -70,7 +147,6 @@ public class HitterService {
             entity.setThirdHit(dto.getThirdHit());
             entity.setHomeRun(dto.getHomeRun());
             entity.setRbi(dto.getRbi());
-            entity.setTeam(team);
 
             repository.save(entity);
         } else {

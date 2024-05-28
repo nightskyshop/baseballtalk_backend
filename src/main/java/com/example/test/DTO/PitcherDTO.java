@@ -14,6 +14,7 @@ public class PitcherDTO {
     private String image;
     private float era;
     private int game;
+    private float inning;
     private int win;
     private int lose;
     private int save;
@@ -28,6 +29,7 @@ public class PitcherDTO {
             String image,
             float era,
             int game,
+            float inning,
             int win,
             int lose,
             int save,
@@ -41,6 +43,7 @@ public class PitcherDTO {
         this.image = image;
         this.era = era;
         this.game = game;
+        this.inning = inning;
         this.win = win;
         this.lose = lose;
         this.save = save;

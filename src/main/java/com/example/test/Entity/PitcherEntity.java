@@ -21,6 +21,7 @@ public class PitcherEntity {
     private String image;
     private float era;
     private int game;
+    private float inning;
     private int win;
     private int lose;
     private int save;

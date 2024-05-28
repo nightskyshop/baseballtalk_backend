@@ -28,6 +28,7 @@ public class HitterResponseDTO {
             int id,
             String name,
             int age,
+            int height,
             int weight,
             String image,
             int avg,
@@ -45,6 +46,7 @@ public class HitterResponseDTO {
         this.id = id;
         this.name = name;
         this.age = age;
+        this.height = height;
         this.weight = weight;
         this.image = image;
         this.avg = avg;
