@@ -67,4 +67,8 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found.");
         }
     }
+
+    public void deleteUser(int id) {
+        repository.deleteById(id);
+    }
 }

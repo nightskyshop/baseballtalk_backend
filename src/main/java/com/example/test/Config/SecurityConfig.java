@@ -56,7 +56,7 @@ public class SecurityConfig {
         http.oauth2Login(oauth2 -> oauth2
                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 .failureHandler((request, response, exception) -> {
-                    response.sendRedirect("/kakao/loginFailure"); // 실패 시 이동할 경로
+                    response.sendRedirect("http://localhost:3000/kakao/loginFailure"); // 실패 시 이동할 경로
                 })
         );
 
