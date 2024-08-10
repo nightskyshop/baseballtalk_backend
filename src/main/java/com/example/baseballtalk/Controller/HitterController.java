@@ -17,11 +17,20 @@ public class HitterController {
     public Page<HitterResponseDTO> getAllHitter(@RequestParam int pageNo) { return service.getAllHitter(pageNo); }
 
     @GetMapping("/avg")
-    public Page<HitterResponseDTO> getAllHitterByAvg(@RequestParam int pageNo) { return  service.getAllHitterByAvg(pageNo); }
+    public Page<HitterResponseDTO> getAllHitterByAvg(@RequestParam int pageNo, @RequestParam int pageSize) { return  service.getAllHitterByAvg(pageNo, pageSize); }
 
     @GetMapping("/{id}")
     public HitterResponseDTO getHitter(@PathVariable int id) { return service.getHitter(id); }
 
+    @GetMapping("/random")
+    public HitterResponseDTO getRandomHitter() { return service.getRandomHitter(); }
+
+    @GetMapping("/random/{team_id}")
+    public HitterResponseDTO getRandomHitterByTeam(@PathVariable int team_id) { return service.getRandomHitterByTeam(team_id); }
+
     @PostMapping("")
     public void createHitter(@RequestBody HitterDTO dto) { service.createHitter(dto); }
+
+    @DeleteMapping("")
+    public void deleteAllHitter() { service.deleteAllHitter(); };
 }

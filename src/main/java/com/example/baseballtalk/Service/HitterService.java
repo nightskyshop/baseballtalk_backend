@@ -15,7 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +52,7 @@ public class HitterService {
                         entity.getThirdHit(),
                         entity.getHomeRun(),
                         entity.getRbi(),
+                        entity.getStolenBase(),
                         new TeamSmallDTO(
                                 entity.getTeam().getId(),
                                 entity.getTeam().getTeamname(),
@@ -56,10 +62,9 @@ public class HitterService {
         return new PageImpl<>(dtos, pageRequest, hitterAllPage.getTotalElements());
     }
 
-    public Page<HitterResponseDTO> getAllHitterByAvg(int pageNo) {
-        int pageSize = 5;
+    public Page<HitterResponseDTO> getAllHitterByAvg(int pageNo, int pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-        Page<HitterEntity> hitterbyAvgPage = repository.findAllByOrderByAvgDesc(pageRequest);
+        Page<HitterEntity> hitterbyAvgPage = repository.findAllByRankedOrderByAvgDesc(true, pageRequest);
         List<HitterResponseDTO> dtos = hitterbyAvgPage.getContent().stream()
                 .map(entity -> new HitterResponseDTO(
                         entity.getId(),
@@ -78,6 +83,7 @@ public class HitterService {
                         entity.getThirdHit(),
                         entity.getHomeRun(),
                         entity.getRbi(),
+                        entity.getStolenBase(),
                         new TeamSmallDTO(
                                 entity.getTeam().getId(),
                                 entity.getTeam().getTeamname(),
@@ -107,6 +113,7 @@ public class HitterService {
                     hitter.getThirdHit(),
                     hitter.getHomeRun(),
                     hitter.getRbi(),
+                    hitter.getStolenBase(),
                     new TeamSmallDTO(
                             hitter.getTeam().getId(),
                             hitter.getTeam().getTeamname(),
@@ -116,6 +123,75 @@ public class HitterService {
             return dto;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player Not Found");
+        }
+    }
+
+    public HitterResponseDTO getRandomHitter() {
+        List<HitterEntity> hitters = repository.findAll();
+        Random random = new Random();
+        HitterEntity hitter = hitters.get(random.nextInt(hitters.size()));
+
+        HitterResponseDTO dto = new HitterResponseDTO(
+                hitter.getId(),
+                hitter.getName(),
+                hitter.getAge(),
+                hitter.getHeight(),
+                hitter.getWeight(),
+                hitter.getImage(),
+                hitter.getAvg(),
+                hitter.getSlg(),
+                hitter.getObp(),
+                hitter.getOps(),
+                hitter.getGame(),
+                hitter.getHit(),
+                hitter.getSecondHit(),
+                hitter.getThirdHit(),
+                hitter.getHomeRun(),
+                hitter.getRbi(),
+                hitter.getStolenBase(),
+                new TeamSmallDTO(
+                        hitter.getTeam().getId(),
+                        hitter.getTeam().getTeamname(),
+                        hitter.getTeam().getTeamnameEn()
+                )
+        );
+        return dto;
+    }
+
+    public HitterResponseDTO getRandomHitterByTeam(int team_id) {
+        if (team_repository.existsById(team_id)) {
+            TeamEntity team = team_repository.findById(team_id);
+            List<HitterEntity> hitters = repository.findAllByTeam(team);
+            Random random = new Random();
+            HitterEntity hitter = hitters.get(random.nextInt(hitters.size()));
+
+            HitterResponseDTO dto = new HitterResponseDTO(
+                    hitter.getId(),
+                    hitter.getName(),
+                    hitter.getAge(),
+                    hitter.getHeight(),
+                    hitter.getWeight(),
+                    hitter.getImage(),
+                    hitter.getAvg(),
+                    hitter.getSlg(),
+                    hitter.getObp(),
+                    hitter.getOps(),
+                    hitter.getGame(),
+                    hitter.getHit(),
+                    hitter.getSecondHit(),
+                    hitter.getThirdHit(),
+                    hitter.getHomeRun(),
+                    hitter.getRbi(),
+                    hitter.getStolenBase(),
+                    new TeamSmallDTO(
+                            hitter.getTeam().getId(),
+                            hitter.getTeam().getTeamname(),
+                            hitter.getTeam().getTeamnameEn()
+                    )
+            );
+            return dto;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found");
         }
     }
 
@@ -130,6 +206,7 @@ public class HitterService {
                 entity = new HitterEntity();
 
                 entity.setTeam(team);
+                entity.setRanked(dto.isRanked());
             }
 
             entity.setName(dto.getName());
@@ -147,11 +224,27 @@ public class HitterService {
             entity.setThirdHit(dto.getThirdHit());
             entity.setHomeRun(dto.getHomeRun());
             entity.setRbi(dto.getRbi());
+            entity.setStolenBase(dto.getStolenBase());
 
             repository.save(entity);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found.");
         }
+    }
 
+    static final String DB_URL = "jdbc:mysql://localhost:3306/baseballtalk";
+    static final String USER = "root";
+    static final String PASS = "javamysql1010*";
+
+    public void deleteAllHitter() {
+        try(Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            Statement stmt = conn.createStatement();
+        ) {
+            String sql = "TRUNCATE TABLE hitter_entity";
+            stmt.executeUpdate(sql);
+            System.out.println("Table deleted in given database...");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

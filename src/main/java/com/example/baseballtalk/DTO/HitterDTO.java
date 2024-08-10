@@ -22,7 +22,9 @@ public class HitterDTO {
     private int thirdHit;
     private int homeRun;
     private int rbi;
+    private int stolenBase;
     private int team;
+    private boolean ranked;
 
     public HitterDTO(
             int id,
@@ -40,7 +42,9 @@ public class HitterDTO {
             int thirdHit,
             int homeRun,
             int rbi,
-            int team
+            int stolenBase,
+            int team,
+            boolean ranked
     ) {
         this.id = id;
         this.name = name;
@@ -57,6 +61,8 @@ public class HitterDTO {
         this.thirdHit = thirdHit;
         this.homeRun = homeRun;
         this.rbi = rbi;
+        this.stolenBase = stolenBase;
         this.team = team;
+        this.ranked = ranked;
     }
 }

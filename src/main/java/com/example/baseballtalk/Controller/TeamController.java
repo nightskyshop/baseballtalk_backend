@@ -16,6 +16,9 @@ public class TeamController {
     @GetMapping("")
     public List<TeamDTO> getAllTeam() { return service.getAllTeam(); }
 
+    @GetMapping("/teamNameEn")
+    public TeamDTO getTeamByEngName(@RequestParam String team_eng_name) { return service.getTeamByEngName(team_eng_name); };
+
     @GetMapping("/{team_id}")
     public TeamDTO getTeam(@PathVariable int team_id) { return service.getTeam(team_id); }
 

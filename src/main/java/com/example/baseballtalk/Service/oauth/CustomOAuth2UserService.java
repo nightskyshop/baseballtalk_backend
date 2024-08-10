@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-
+    @Autowired
+    private KakaoUserService kakaoUserService;
     @Autowired
     private UserRepository userRepository;
 
@@ -21,26 +22,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        if (userRequest == null) {
-            throw new IllegalArgumentException("OAuth2UserRequest cannot be null");
-        }
-        System.out.println("NEWUSER!!!");
-        OAuth2User oAuth2User;
+        System.out.println("LOAD USER!");
+        OAuth2User oAuth2User = super.loadUser(userRequest);
         try {
-            oAuth2User = super.loadUser(userRequest);
-            if (oAuth2User == null) {
-                throw new OAuth2AuthenticationException("Failed to load user from OAuth2 provider");
-            }
-            return oAuth2User;
-        } catch (OAuth2AuthenticationException e) {
-            // More detailed error logging
-            System.out.println("OAuth2AuthenticationException: " + e.toString());
-            throw e;
+            return processOAuth2User(oAuth2User);
         } catch (Exception ex) {
-            // More detailed error logging
-            System.out.println("Exception occurred: " + ex.toString());
-            throw new OAuth2AuthenticationException(String.valueOf(ex));
+            throw new OAuth2AuthenticationException("throw1");
         }
     }
+
+    private OAuth2User processOAuth2User(OAuth2User oAuth2User) {
+        System.out.println("PROCESS USER!");
+        return oAuth2User;
+    }
 }
+
 

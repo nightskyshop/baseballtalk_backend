@@ -28,6 +28,8 @@ public class HitterEntity {
     private int thirdHit;
     private int homeRun;
     private int rbi;
+    private int stolenBase;
+    private boolean ranked;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id")

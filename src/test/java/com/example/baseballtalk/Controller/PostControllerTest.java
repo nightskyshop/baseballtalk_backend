@@ -104,9 +104,10 @@ public class PostControllerTest {
         mockMvc.perform(
                 post("http://localhost:8080/post")
                         .with(csrf())
+                        .with(oauth2Login())
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print());
 
         verify(postService).createPost(new PostDTO("hello", "hello-content", 1, "팀/선수", 1));

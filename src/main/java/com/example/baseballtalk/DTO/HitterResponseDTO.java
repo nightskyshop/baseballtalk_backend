@@ -22,6 +22,7 @@ public class HitterResponseDTO {
     private int thirdHit;
     private int homeRun;
     private int rbi;
+    private int stolenBase;
     private TeamSmallDTO team;
 
     public HitterResponseDTO(
@@ -41,6 +42,7 @@ public class HitterResponseDTO {
             int thirdHit,
             int homeRun,
             int rbi,
+            int stolenBase,
             TeamSmallDTO team
     ) {
         this.id = id;
@@ -59,6 +61,7 @@ public class HitterResponseDTO {
         this.thirdHit = thirdHit;
         this.homeRun = homeRun;
         this.rbi = rbi;
+        this.stolenBase = stolenBase;
         this.team = team;
     }
 }

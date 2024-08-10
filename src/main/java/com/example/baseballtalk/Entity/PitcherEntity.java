@@ -26,6 +26,8 @@ public class PitcherEntity {
     private int lose;
     private int save;
     private int hold;
+    private float whip;
+    private boolean ranked;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id")

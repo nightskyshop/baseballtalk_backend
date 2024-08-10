@@ -17,11 +17,20 @@ public class PitcherController {
     public Page<PitcherResponseDTO> getAllPitcher(@RequestParam int pageNo) { return service.getAllPitcher(pageNo); };
 
     @GetMapping("/era")
-    public Page<PitcherResponseDTO> getAllPitcherByEra(@RequestParam int pageNo) { return service.getAllPitcherByEra(pageNo); };
+    public Page<PitcherResponseDTO> getAllPitcherByEra(@RequestParam int pageNo, @RequestParam int pageSize) { return service.getAllPitcherByEra(pageNo, pageSize); };
 
     @GetMapping("/{id}")
     public PitcherResponseDTO getPitcher(@PathVariable int id) { return service.getPitcher(id); }
 
+    @GetMapping("/random")
+    public PitcherResponseDTO getRandomPitcher() { return service.getRandomPitcher(); }
+
+    @GetMapping("/random/{team_id}")
+    public PitcherResponseDTO getRandomPitcherByTeam(@PathVariable int team_id) { return service.getRandomPitcherByTeam(team_id); }
+
     @PostMapping("")
     public void createPitcher(@RequestBody PitcherDTO dto) { service.createPitcher(dto); }
+
+    @DeleteMapping("")
+    public void deletePitcher() { service.deleteAllPitcher(); };
 }

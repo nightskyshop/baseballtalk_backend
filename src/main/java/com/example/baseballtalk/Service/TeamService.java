@@ -51,6 +51,25 @@ public class TeamService {
         );
     }
 
+    public TeamDTO getTeamByEngName(String team_eng_name) {
+        TeamEntity team = repository.findByTeamnameEn(team_eng_name);
+
+        return new TeamDTO(
+                team.getId(),
+                team.getTeamname(),
+                team.getTeamnameEn(),
+                team.getRanknum(),
+                team.getGame(),
+                team.getWin(),
+                team.getLose(),
+                team.getTie(),
+                team.getWinavg(),
+                team.getAvg(),
+                team.getEra()
+        );
+    }
+
+
     public void createUpdateTeam(TeamDTO dto) {
         TeamEntity entity;
         if (repository.existsByTeamname(dto.getTeamname())) {

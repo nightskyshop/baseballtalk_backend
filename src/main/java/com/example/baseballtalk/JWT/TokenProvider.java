@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -32,6 +33,7 @@ public class TokenProvider {
     }
 
     public TokenDTO generateTokenDto(Authentication authentication) {
+
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -40,8 +42,18 @@ public class TokenProvider {
         Date tokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         System.out.println("토큰만료시간: " + tokenExpiresIn);
 
+        String subject;
+        if (authentication instanceof OAuth2AuthenticationToken){
+            OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
+            System.out.println("oauthToken email: " + oauthToken.getPrincipal().getAttribute("email"));
+            System.out.println("authentication: " + authentication);
+            subject = oauthToken.getPrincipal().getAttribute("email");
+        } else {
+            subject = authentication.getName();
+        }
+
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(subject)
                 .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(tokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)

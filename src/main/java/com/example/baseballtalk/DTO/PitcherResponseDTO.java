@@ -19,6 +19,7 @@ public class PitcherResponseDTO {
     private int lose;
     private int save;
     private int hold;
+    private float whip;
     private TeamSmallDTO team;
 
     public PitcherResponseDTO(
@@ -35,6 +36,7 @@ public class PitcherResponseDTO {
             int lose,
             int save,
             int hold,
+            float whip,
             TeamSmallDTO team) {
         this.id = id;
         this.name = name;
@@ -49,6 +51,7 @@ public class PitcherResponseDTO {
         this.lose = lose;
         this.save = save;
         this.hold = hold;
+        this.whip = whip;
         this.team = team;
     }
 }
