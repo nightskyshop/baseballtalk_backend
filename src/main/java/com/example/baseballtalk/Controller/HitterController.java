@@ -28,6 +28,9 @@ public class HitterController {
     @GetMapping("/random/{team_id}")
     public HitterResponseDTO getRandomHitterByTeam(@PathVariable int team_id) { return service.getRandomHitterByTeam(team_id); }
 
+    @GetMapping("/search")
+    public Page<HitterResponseDTO> searchHitter(@RequestParam int pageNo, @RequestParam String searchParam) { return service.searchHitter(pageNo, searchParam); }
+
     @PostMapping("")
     public void createHitter(@RequestBody HitterDTO dto) { service.createHitter(dto); }
 

@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface HitterRepository  extends JpaRepository<HitterEntity, Integer> {
+
+    Page<HitterEntity> findAllByNameContainingOrderByGameDesc(String name, PageRequest pageRequest);
     Page<HitterEntity> findAllByRankedOrderByAvgDesc(boolean ranked, PageRequest pageRequest);
     List<HitterEntity> findAllByTeam(TeamEntity team);
     HitterEntity findById(int id);

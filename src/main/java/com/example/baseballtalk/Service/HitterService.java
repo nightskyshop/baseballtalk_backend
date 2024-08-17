@@ -195,6 +195,39 @@ public class HitterService {
         }
     }
 
+    public Page<HitterResponseDTO> searchHitter(int pageNo, String searchParam) {
+        int pageSize = 5;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<HitterEntity> hitterbyAvgPage = repository.findAllByNameContainingOrderByGameDesc(searchParam, pageRequest);
+        List<HitterResponseDTO> dtos = hitterbyAvgPage.getContent().stream()
+                .map(entity -> new HitterResponseDTO(
+                        entity.getId(),
+                        entity.getName(),
+                        entity.getAge(),
+                        entity.getHeight(),
+                        entity.getWeight(),
+                        entity.getImage(),
+                        entity.getAvg(),
+                        entity.getSlg(),
+                        entity.getObp(),
+                        entity.getOps(),
+                        entity.getGame(),
+                        entity.getHit(),
+                        entity.getSecondHit(),
+                        entity.getThirdHit(),
+                        entity.getHomeRun(),
+                        entity.getRbi(),
+                        entity.getStolenBase(),
+                        new TeamSmallDTO(
+                                entity.getTeam().getId(),
+                                entity.getTeam().getTeamname(),
+                                entity.getTeam().getTeamnameEn()
+                        )))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageRequest, hitterbyAvgPage.getTotalElements());
+
+    }
+
     public void createHitter(HitterDTO dto) {
         HitterEntity entity;
         if (team_repository.existsById(dto.getTeam())) {

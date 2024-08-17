@@ -179,6 +179,36 @@ public class PitcherService {
         }
     }
 
+
+    public Page<PitcherResponseDTO> searchPitcher(int pageNo, String searchParam) {
+        int pageSize = 5;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<PitcherEntity> pitcherbyEraPage = repository.findAllByNameContainingOrderByGameDesc(searchParam, pageRequest);
+        List<PitcherResponseDTO> dtos = pitcherbyEraPage.getContent().stream()
+                .map(entity -> new PitcherResponseDTO(
+                        entity.getId(),
+                        entity.getName(),
+                        entity.getAge(),
+                        entity.getHeight(),
+                        entity.getWeight(),
+                        entity.getImage(),
+                        entity.getEra(),
+                        entity.getGame(),
+                        entity.getInning(),
+                        entity.getWin(),
+                        entity.getLose(),
+                        entity.getSave(),
+                        entity.getHold(),
+                        entity.getWhip(),
+                        new TeamSmallDTO(
+                                entity.getTeam().getId(),
+                                entity.getTeam().getTeamname(),
+                                entity.getTeam().getTeamnameEn()
+                        )))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageRequest, pitcherbyEraPage.getTotalElements());
+    }
+
     public void createPitcher(PitcherDTO dto) {
         PitcherEntity entity;
         if (team_repository.existsById(dto.getTeam())) {

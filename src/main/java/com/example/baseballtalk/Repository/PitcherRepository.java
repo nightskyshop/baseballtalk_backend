@@ -12,6 +12,7 @@ public interface PitcherRepository extends JpaRepository<PitcherEntity, Integer>
     PitcherEntity findById(int id);
     PitcherEntity findByNameAndTeam(String name, TeamEntity team);
     Page<PitcherEntity> findAllByRankedOrderByEraAsc(boolean ranked, PageRequest pageRequest);
+    Page<PitcherEntity> findAllByNameContainingOrderByGameDesc(String name, PageRequest pageRequest);
     List<PitcherEntity> findAllByTeam(TeamEntity team);
     boolean existsByNameAndTeam(String name, TeamEntity team);
 }
