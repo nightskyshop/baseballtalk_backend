@@ -76,6 +76,7 @@ public class TeamService {
             entity = repository.findByTeamname(dto.getTeamname());
 
             entity.setTeamname(dto.getTeamname());
+            entity.setTeamnameEn(dto.getTeamnameEn());
             entity.setRanknum(dto.getRanknum());
             entity.setGame(dto.getGame());
             entity.setWin(dto.getWin());
@@ -88,6 +89,7 @@ public class TeamService {
             entity = new TeamEntity();
 
             entity.setTeamname(dto.getTeamname());
+            entity.setTeamnameEn(dto.getTeamnameEn());
             entity.setRanknum(dto.getRanknum());
             entity.setGame(dto.getGame());
             entity.setWin(dto.getWin());
