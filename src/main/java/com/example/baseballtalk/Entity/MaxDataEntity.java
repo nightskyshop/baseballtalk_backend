@@ -16,6 +16,7 @@ public class MaxDataEntity {
     private int id;
     private int maxHit;
     private int maxHomerun;
+    private int maxRbi;
     private int maxStolenBase;
     private int maxWin;
     private float maxInning;

@@ -39,6 +39,16 @@ public class PostEntity extends BaseEntity {
     @JsonManagedReference
     private List<LikeEntity> like = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<HitterDataEntity> hitter = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<PitcherDataEntity> pitcher = new ArrayList<>();
+
+
     @Builder
     public PostEntity(){}
 }

@@ -32,6 +32,7 @@ public class MaxDataService {
 
         entity.setMaxHit(dto.getMaxHit());
         entity.setMaxHomerun(dto.getMaxHomerun());
+        entity.setMaxRbi(dto.getMaxRbi());
         entity.setMaxStolenBase(dto.getMaxStolenBase());
         entity.setMaxWin(dto.getMaxWin());
         entity.setMaxInning(dto.getMaxInning());
