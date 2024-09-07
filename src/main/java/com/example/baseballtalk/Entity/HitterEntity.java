@@ -1,10 +1,14 @@
 package com.example.baseballtalk.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,6 +39,10 @@ public class HitterEntity {
     @JoinColumn(name = "team_id")
     @JsonBackReference
     private TeamEntity team;
+
+    @OneToMany(mappedBy = "hitter", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<HitterChatEntity> chat = new ArrayList<>();
 
     @Builder
     public HitterEntity(){}

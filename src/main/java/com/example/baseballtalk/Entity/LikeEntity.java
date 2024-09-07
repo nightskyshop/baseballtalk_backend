@@ -29,4 +29,14 @@ public class LikeEntity extends BaseEntity {
     @JoinColumn(name = "chat_id")
     @JsonBackReference
     private ChatEntity chat;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "hitter_chat_id")
+    @JsonBackReference
+    private HitterChatEntity hitterChat;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "pitcher_chat_id")
+    @JsonBackReference
+    private PitcherChatEntity pitcherChat;
 }

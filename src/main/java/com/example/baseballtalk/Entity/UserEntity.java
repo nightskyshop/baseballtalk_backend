@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 @jakarta.persistence.Entity
 @Getter
 @Setter
+@DynamicInsert
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +52,14 @@ public class UserEntity {
 //        this.introduce = introduce;
 //        this.team = team;
 //    }
+
+
+    @PrePersist
+    public void prePersist() {
+        if (this.image == null || this.image.isEmpty()) {
+            this.image = "https://i.namu.wiki/i/Bge3xnYd4kRe_IKbm2uqxlhQJij2SngwNssjpjaOyOqoRhQlNwLrR2ZiK-JWJ2b99RGcSxDaZ2UCI7fiv4IDDQ.webp";
+        }
+    }
     @Builder
     public UserEntity() {};
 }
