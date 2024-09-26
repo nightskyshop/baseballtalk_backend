@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -37,7 +38,6 @@ public class PitcherService {
                 .map(entity -> new PitcherResponseDTO(
                         entity.getId(),
                         entity.getName(),
-                        entity.getAge(),
                         entity.getHeight(),
                         entity.getWeight(),
                         entity.getImage(),
@@ -65,7 +65,6 @@ public class PitcherService {
                 .map(entity -> new PitcherResponseDTO(
                         entity.getId(),
                         entity.getName(),
-                        entity.getAge(),
                         entity.getHeight(),
                         entity.getWeight(),
                         entity.getImage(),
@@ -92,7 +91,6 @@ public class PitcherService {
             PitcherResponseDTO dto = new PitcherResponseDTO(
                     pitcher.getId(),
                     pitcher.getName(),
-                    pitcher.getAge(),
                     pitcher.getHeight(),
                     pitcher.getWeight(),
                     pitcher.getImage(),
@@ -124,7 +122,6 @@ public class PitcherService {
         PitcherResponseDTO dto = new PitcherResponseDTO(
                 pitcher.getId(),
                 pitcher.getName(),
-                pitcher.getAge(),
                 pitcher.getHeight(),
                 pitcher.getWeight(),
                 pitcher.getImage(),
@@ -155,7 +152,6 @@ public class PitcherService {
             PitcherResponseDTO dto = new PitcherResponseDTO(
                     pitcher.getId(),
                     pitcher.getName(),
-                    pitcher.getAge(),
                     pitcher.getHeight(),
                     pitcher.getWeight(),
                     pitcher.getImage(),
@@ -188,7 +184,6 @@ public class PitcherService {
                 .map(entity -> new PitcherResponseDTO(
                         entity.getId(),
                         entity.getName(),
-                        entity.getAge(),
                         entity.getHeight(),
                         entity.getWeight(),
                         entity.getImage(),
@@ -209,37 +204,68 @@ public class PitcherService {
         return new PageImpl<>(dtos, pageRequest, pitcherbyEraPage.getTotalElements());
     }
 
-    public void createPitcher(PitcherDTO dto) {
-        PitcherEntity entity;
-        if (team_repository.existsById(dto.getTeam())) {
-            TeamEntity team = team_repository.findById(dto.getTeam());
+    private List<PitcherDTO> inMemoryDataList = new ArrayList<>();
 
-            if (repository.existsByNameAndTeam(dto.getName(), team)) {
-                entity = repository.findByNameAndTeam(dto.getName(), team);
-            } else {
-                entity = new PitcherEntity();
-
-                entity.setTeam(team);
-                entity.setRanked(dto.isRanked());
-            }
-
-            entity.setName(dto.getName());
-            entity.setAge(dto.getAge());
-            entity.setHeight(dto.getHeight());
-            entity.setWeight(dto.getWeight());
-            entity.setImage(dto.getImage());
-            entity.setEra(dto.getEra());
-            entity.setGame(dto.getGame());
-            entity.setInning(dto.getInning());
-            entity.setWin(dto.getWin());
-            entity.setLose(dto.getLose());
-            entity.setSave(dto.getSave());
-            entity.setHold(dto.getHold());
-            entity.setWhip(dto.getWhip());
-
-            repository.save(entity);
+    public void createPitcher(PitcherDTO dto, String flag) {
+        if ("end".equals(flag)) {
+            saveOrUpdatePitchers(inMemoryDataList);
+            inMemoryDataList.clear();
+        } else if ("start".equals(flag)) {
+            inMemoryDataList.clear();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found.");
+            inMemoryDataList.add(dto);
+        }
+    }
+
+    public void saveOrUpdatePitchers(List<PitcherDTO> inMemoryDataList) {
+        for (PitcherDTO dto : inMemoryDataList) {
+            if (team_repository.existsById(dto.getTeam())) {
+                TeamEntity team = team_repository.findById(dto.getTeam());
+
+                if (repository.existsByNameAndTeam(dto.getName(), team)) {
+                    PitcherEntity entity = repository.findByNameAndTeam(dto.getName(), team);
+
+                    entity.setName(dto.getName());
+                    entity.setAge(dto.getAge());
+                    entity.setHeight(dto.getHeight());
+                    entity.setWeight(dto.getWeight());
+                    entity.setImage(dto.getImage());
+                    entity.setEra(dto.getEra());
+                    entity.setGame(dto.getGame());
+                    entity.setInning(dto.getInning());
+                    entity.setWin(dto.getWin());
+                    entity.setLose(dto.getLose());
+                    entity.setSave(dto.getSave());
+                    entity.setHold(dto.getHold());
+                    entity.setWhip(dto.getWhip());
+                    entity.setTeam(team);
+                    entity.setRanked(dto.isRanked());
+
+                    repository.save(entity);
+                } else {
+                    PitcherEntity entity = new PitcherEntity();
+
+                    entity.setName(dto.getName());
+                    entity.setAge(dto.getAge());
+                    entity.setHeight(dto.getHeight());
+                    entity.setWeight(dto.getWeight());
+                    entity.setImage(dto.getImage());
+                    entity.setEra(dto.getEra());
+                    entity.setGame(dto.getGame());
+                    entity.setInning(dto.getInning());
+                    entity.setWin(dto.getWin());
+                    entity.setLose(dto.getLose());
+                    entity.setSave(dto.getSave());
+                    entity.setHold(dto.getHold());
+                    entity.setWhip(dto.getWhip());
+                    entity.setTeam(team);
+                    entity.setRanked(dto.isRanked());
+
+                    repository.save(entity);
+                }
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found.");
+            }
         }
     }
 

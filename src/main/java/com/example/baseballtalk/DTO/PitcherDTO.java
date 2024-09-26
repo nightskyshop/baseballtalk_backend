@@ -22,6 +22,7 @@ public class PitcherDTO {
     private float whip;
     private int team;
     private boolean ranked;
+    private boolean falseable;
 
     public PitcherDTO(
             int id,
@@ -38,7 +39,8 @@ public class PitcherDTO {
             int hold,
             float whip,
             int team,
-            boolean ranked
+            boolean ranked,
+            boolean falseable
     ) {
         this.id = id;
         this.name = name;
@@ -55,5 +57,6 @@ public class PitcherDTO {
         this.whip = whip;
         this.team = team;
         this.ranked = ranked;
+        this.falseable = falseable;
     }
 }

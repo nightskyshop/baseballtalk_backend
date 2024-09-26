@@ -13,12 +13,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -38,7 +40,6 @@ public class HitterService {
                 .map(entity -> new HitterResponseDTO(
                         entity.getId(),
                         entity.getName(),
-                        entity.getAge(),
                         entity.getHeight(),
                         entity.getWeight(),
                         entity.getImage(),
@@ -69,7 +70,6 @@ public class HitterService {
                 .map(entity -> new HitterResponseDTO(
                         entity.getId(),
                         entity.getName(),
-                        entity.getAge(),
                         entity.getHeight(),
                         entity.getWeight(),
                         entity.getImage(),
@@ -99,7 +99,6 @@ public class HitterService {
             HitterResponseDTO dto = new HitterResponseDTO(
                     hitter.getId(),
                     hitter.getName(),
-                    hitter.getAge(),
                     hitter.getHeight(),
                     hitter.getWeight(),
                     hitter.getImage(),
@@ -134,7 +133,6 @@ public class HitterService {
         HitterResponseDTO dto = new HitterResponseDTO(
                 hitter.getId(),
                 hitter.getName(),
-                hitter.getAge(),
                 hitter.getHeight(),
                 hitter.getWeight(),
                 hitter.getImage(),
@@ -168,7 +166,6 @@ public class HitterService {
             HitterResponseDTO dto = new HitterResponseDTO(
                     hitter.getId(),
                     hitter.getName(),
-                    hitter.getAge(),
                     hitter.getHeight(),
                     hitter.getWeight(),
                     hitter.getImage(),
@@ -203,7 +200,6 @@ public class HitterService {
                 .map(entity -> new HitterResponseDTO(
                         entity.getId(),
                         entity.getName(),
-                        entity.getAge(),
                         entity.getHeight(),
                         entity.getWeight(),
                         entity.getImage(),
@@ -228,42 +224,78 @@ public class HitterService {
 
     }
 
-    public void createHitter(HitterDTO dto) {
-        HitterEntity entity;
-        if (team_repository.existsById(dto.getTeam())) {
-            TeamEntity team = team_repository.findById(dto.getTeam());
+    private List<HitterDTO> inMemoryDataList = new ArrayList<>();
 
-            if (repository.existsByNameAndTeam(dto.getName(), team)) {
-                entity = repository.findByNameAndTeam(dto.getName(), team);
-            } else {
-                entity = new HitterEntity();
-
-                entity.setTeam(team);
-                entity.setRanked(dto.isRanked());
-            }
-
-            entity.setName(dto.getName());
-            entity.setAge(dto.getAge());
-            entity.setWeight(dto.getWeight());
-            entity.setHeight(dto.getHeight());
-            entity.setImage(dto.getImage());
-            entity.setAvg(dto.getAvg());
-            entity.setSlg(dto.getSlg());
-            entity.setObp(dto.getObp());
-            entity.setOps(dto.getOps());
-            entity.setGame(dto.getGame());
-            entity.setHit(dto.getHit());
-            entity.setSecondHit(dto.getSecondHit());
-            entity.setThirdHit(dto.getThirdHit());
-            entity.setHomeRun(dto.getHomeRun());
-            entity.setRbi(dto.getRbi());
-            entity.setStolenBase(dto.getStolenBase());
-
-            repository.save(entity);
+    public void createHitter(HitterDTO dto, String flag) {
+        if ("end".equals(flag)) {
+            saveOrUpdateHitters(inMemoryDataList);
+            inMemoryDataList.clear();
+        } else if ("start".equals(flag)) {
+            inMemoryDataList.clear();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found.");
+            inMemoryDataList.add(dto);
         }
     }
+
+    @Transactional
+    public void saveOrUpdateHitters(List<HitterDTO> inMemoryDataList) {
+        for (HitterDTO dto : inMemoryDataList) {
+            if (team_repository.existsById(dto.getTeam())) {
+                TeamEntity team = team_repository.findById(dto.getTeam());
+
+                if (repository.existsByNameAndTeam(dto.getName(), team)) {
+                    HitterEntity entity = repository.findByNameAndTeam(dto.getName(), team);
+
+                    entity.setName(dto.getName());
+                    entity.setAge(dto.getAge());
+                    entity.setWeight(dto.getWeight());
+                    entity.setHeight(dto.getHeight());
+                    entity.setImage(dto.getImage());
+                    entity.setAvg(dto.getAvg());
+                    entity.setSlg(dto.getSlg());
+                    entity.setObp(dto.getObp());
+                    entity.setOps(dto.getOps());
+                    entity.setGame(dto.getGame());
+                    entity.setHit(dto.getHit());
+                    entity.setSecondHit(dto.getSecondHit());
+                    entity.setThirdHit(dto.getThirdHit());
+                    entity.setHomeRun(dto.getHomeRun());
+                    entity.setRbi(dto.getRbi());
+                    entity.setStolenBase(dto.getStolenBase());
+                    entity.setTeam(team);
+                    entity.setRanked(dto.isRanked());
+
+                    repository.save(entity);
+                } else {
+                    HitterEntity entity = new HitterEntity();
+
+                    entity.setName(dto.getName());
+                    entity.setAge(dto.getAge());
+                    entity.setWeight(dto.getWeight());
+                    entity.setHeight(dto.getHeight());
+                    entity.setImage(dto.getImage());
+                    entity.setAvg(dto.getAvg());
+                    entity.setSlg(dto.getSlg());
+                    entity.setObp(dto.getObp());
+                    entity.setOps(dto.getOps());
+                    entity.setGame(dto.getGame());
+                    entity.setHit(dto.getHit());
+                    entity.setSecondHit(dto.getSecondHit());
+                    entity.setThirdHit(dto.getThirdHit());
+                    entity.setHomeRun(dto.getHomeRun());
+                    entity.setRbi(dto.getRbi());
+                    entity.setStolenBase(dto.getStolenBase());
+                    entity.setTeam(team);
+                    entity.setRanked(dto.isRanked());
+
+                    repository.save(entity);
+                }
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found.");
+            }
+        }
+    }
+
 
     static final String DB_URL = "jdbc:mysql://localhost:3306/baseballtalk";
     static final String USER = "root";

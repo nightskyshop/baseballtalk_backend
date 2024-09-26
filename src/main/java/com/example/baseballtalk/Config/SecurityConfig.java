@@ -68,8 +68,8 @@ public class SecurityConfig {
                 }));
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers("/auth/**", "/error").permitAll()
-                .requestMatchers("/api/**").authenticated() // JWT 인증이 필요한 경로
-                .anyRequest().permitAll()); // OAuth2 인증이 필요한 경로
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll());
 
         JwtFilter jwtFilter = new JwtFilter(tokenProvider);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

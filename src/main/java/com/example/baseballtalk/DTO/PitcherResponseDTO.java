@@ -8,7 +8,6 @@ import lombok.Setter;
 public class PitcherResponseDTO {
     private int id;
     private String name;
-    private int age;
     private int height;
     private int weight;
     private String image;
@@ -25,7 +24,6 @@ public class PitcherResponseDTO {
     public PitcherResponseDTO(
             int id,
             String name,
-            int age,
             int height,
             int weight,
             String image,
@@ -40,7 +38,6 @@ public class PitcherResponseDTO {
             TeamSmallDTO team) {
         this.id = id;
         this.name = name;
-        this.age = age;
         this.height = height;
         this.weight = weight;
         this.image = image;

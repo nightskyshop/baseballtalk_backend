@@ -32,7 +32,7 @@ public class PitcherController {
     public Page<PitcherResponseDTO> searchPitcher(@RequestParam int pageNo, @RequestParam String searchParam) { return service.searchPitcher(pageNo, searchParam); }
 
     @PostMapping("")
-    public void createPitcher(@RequestBody PitcherDTO dto) { service.createPitcher(dto); }
+    public void createPitcher(@RequestBody PitcherDTO dto, @RequestParam String flag) { service.createPitcher(dto, flag); }
 
     @DeleteMapping("")
     public void deletePitcher() { service.deleteAllPitcher(); };

@@ -40,10 +40,6 @@ public class HitterEntity {
     @JsonBackReference
     private TeamEntity team;
 
-    @OneToMany(mappedBy = "hitter", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<HitterChatEntity> chat = new ArrayList<>();
-
     @Builder
     public HitterEntity(){}
 }

@@ -32,7 +32,7 @@ public class HitterController {
     public Page<HitterResponseDTO> searchHitter(@RequestParam int pageNo, @RequestParam String searchParam) { return service.searchHitter(pageNo, searchParam); }
 
     @PostMapping("")
-    public void createHitter(@RequestBody HitterDTO dto) { service.createHitter(dto); }
+    public void createHitter(@RequestBody HitterDTO dto, @RequestParam String flag) { service.createHitter(dto, flag); }
 
     @DeleteMapping("")
     public void deleteAllHitter() { service.deleteAllHitter(); };

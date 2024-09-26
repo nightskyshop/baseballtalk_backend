@@ -8,7 +8,6 @@ import lombok.Setter;
 public class HitterResponseDTO {
     private int id;
     private String name;
-    private int age;
     private int height;
     private int weight;
     private String image;
@@ -28,7 +27,6 @@ public class HitterResponseDTO {
     public HitterResponseDTO(
             int id,
             String name,
-            int age,
             int height,
             int weight,
             String image,
@@ -47,7 +45,6 @@ public class HitterResponseDTO {
     ) {
         this.id = id;
         this.name = name;
-        this.age = age;
         this.height = height;
         this.weight = weight;
         this.image = image;
