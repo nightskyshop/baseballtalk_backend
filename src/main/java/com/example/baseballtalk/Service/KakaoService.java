@@ -63,8 +63,8 @@ public class KakaoService {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-
             headers.add("Content-type", "application/x-www-form-urlencoded");
+
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             params.add("grant_type", "authorization_code");
             params.add("client_id", KAKAO_CLIENT_ID);

@@ -37,6 +37,7 @@ public class UserService {
             entity.setEmail(dto.getEmail());
             entity.setImage(dto.getImage());
             entity.setIntroduce(dto.getIntroduce());
+            entity.setTeam(dto.getTeam());
             repository.save(entity);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found.");
