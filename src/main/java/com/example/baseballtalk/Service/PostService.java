@@ -4,12 +4,8 @@ import com.example.baseballtalk.DTO.PostDTO;
 import com.example.baseballtalk.DTO.PostResponseDTO;
 import com.example.baseballtalk.DTO.TeamSmallDTO;
 import com.example.baseballtalk.DTO.UserResponseDTO;
-import com.example.baseballtalk.Entity.PostEntity;
-import com.example.baseballtalk.Entity.TeamEntity;
-import com.example.baseballtalk.Entity.UserEntity;
-import com.example.baseballtalk.Repository.PostRepository;
-import com.example.baseballtalk.Repository.TeamRepository;
-import com.example.baseballtalk.Repository.UserRepository;
+import com.example.baseballtalk.Entity.*;
+import com.example.baseballtalk.Repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
@@ -29,6 +26,14 @@ public class PostService {
     private UserRepository user_repository;
     @Autowired
     private TeamRepository team_repository;
+    @Autowired
+    private HitterRepository hitter_repository;
+    @Autowired
+    private HitterDataRepository hitter_data_repository;
+    @Autowired
+    private PitcherRepository pitcher_repository;
+    @Autowired
+    private PitcherDataRepository pitcher_data_repository;
 
     public Page<PostResponseDTO> getAllPost(int pageNo) {
         int pageSize = 5;
@@ -48,7 +53,9 @@ public class PostService {
                         UserResponseDTO.of(entity.getAuthor()),
                         entity.getLike().size(),
                         entity.getCreatedAt(),
-                        entity.getUpdatedAt()))
+                        entity.getUpdatedAt(),
+                        entity.getHitter(),
+                        entity.getPitcher()))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageRequest, postAllPage.getTotalElements());
     }
@@ -74,7 +81,9 @@ public class PostService {
                             UserResponseDTO.of(entity.getAuthor()),
                             entity.getLike().size(),
                             entity.getCreatedAt(),
-                            entity.getUpdatedAt()))
+                            entity.getUpdatedAt(),
+                            entity.getHitter(),
+                            entity.getPitcher()))
                     .collect(Collectors.toList());
             return new PageImpl<>(dtos, pageRequest, postbyUserPage.getTotalElements());
         } else {
@@ -103,7 +112,9 @@ public class PostService {
                             UserResponseDTO.of(entity.getAuthor()),
                             entity.getLike().size(),
                             entity.getCreatedAt(),
-                            entity.getUpdatedAt()))
+                            entity.getUpdatedAt(),
+                            entity.getHitter(),
+                            entity.getPitcher()))
                     .collect(Collectors.toList());
             return new PageImpl<>(dtos, pageRequest, postbyTeamPage.getTotalElements());
         } else {
@@ -127,7 +138,9 @@ public class PostService {
                     UserResponseDTO.of(post.getAuthor()),
                     post.getLike().size(),
                     post.getCreatedAt(),
-                    post.getUpdatedAt()
+                    post.getUpdatedAt(),
+                    post.getHitter(),
+                    post.getPitcher()
             );
             return dto;
         } else {
@@ -149,6 +162,46 @@ public class PostService {
             entity.setAuthor(user);
 
             repository.save(entity);
+
+            for (int i : dto.getHitterList()) {
+                if (hitter_repository.existsById(i)) {
+                    System.out.println("HITTER");
+                    HitterEntity hitter = hitter_repository.findById(i);
+                    HitterDataEntity hitterData = new HitterDataEntity();
+
+                    hitterData.setName(hitter.getName());
+                    hitterData.setImage(hitter.getImage());
+                    hitterData.setAvg(hitter.getAvg());
+                    hitterData.setHit(hitter.getHit());
+                    hitterData.setHomeRun(hitter.getHomeRun());
+                    hitterData.setRbi(hitter.getRbi());
+                    hitterData.setStolenBase(hitter.getStolenBase());
+                    hitterData.setPost(entity);
+
+                    hitter_data_repository.save(hitterData);
+                } else {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Hitter Not Found.");
+                }
+            }
+
+            for (int i : dto.getPitcherList()) {
+                System.out.println("PITCHER");
+                if (pitcher_repository.existsById(i)) {
+                    PitcherEntity pitcher = pitcher_repository.findById(i);
+                    PitcherDataEntity pitcherData = new PitcherDataEntity();
+
+                    pitcherData.setName(pitcher.getName());
+                    pitcherData.setImage(pitcher.getImage());
+                    pitcherData.setEra(pitcher.getEra());
+                    pitcherData.setInning(pitcher.getInning());
+                    pitcherData.setWin(pitcher.getWin());
+                    pitcherData.setWhip(pitcher.getWhip());
+
+                    pitcher_data_repository.save(pitcherData);
+                } else {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pitcher Not Found.");
+                }
+            }
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found.");
         }

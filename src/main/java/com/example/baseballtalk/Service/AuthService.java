@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.regex.Pattern;
+
 import static com.example.baseballtalk.Config.Authority.ROLE_USER;
 
 @Service
@@ -29,6 +31,15 @@ public class AuthService {
         if (userRepository.existsByUsername(requestDto.getUsername()) || userRepository.existsByEmail(requestDto.getEmail())) {
             throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, "이미 가입되어 있는 유저입니다.");
         }
+
+        String password = requestDto.getPassword();
+        String passwordRegex = "^(?=.*\\d)(?=.*[@$!%*?&])[\\d@$!%*?&]{8,}$";
+
+        if (!Pattern.matches(passwordRegex, password)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "비밀번호는 최소 8자 이상이며, 숫자와 특수문자(@$!%*?&)를 각각 하나 이상 포함해야 합니다.");
+        }
+
         UserEntity user = requestDto.toUser(passwordEncoder);
         user.setAuthority(ROLE_USER);
         return UserResponseDTO.of(userRepository.save(user));

@@ -14,6 +14,7 @@ public class PitcherDataEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    private String image;
     private float era;
     private float inning;
     private int win;

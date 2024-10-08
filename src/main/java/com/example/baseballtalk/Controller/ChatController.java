@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -51,6 +52,7 @@ public class ChatController {
         if (accessToken == null || !accessToken.startsWith("Bearer ")) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "JWT 토큰이 전달되지 않았습니다.");
         }
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         String token = accessToken.substring(7);
         boolean isValid = tokenProvider.validateToken(token);

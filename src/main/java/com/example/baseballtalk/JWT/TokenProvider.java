@@ -25,11 +25,16 @@ public class TokenProvider {
     private static  final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1시간
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 3; // 3일
+
 
     private final Key key;
+//    private final Key refreshKey;
     public TokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+//        byte[] refreshKeyBytes = Decoders.BASE64.decode(refreshKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+//        this.refreshKey = Keys.hmacShaKeyFor((refreshKeyBytes));
     }
 
     public TokenDTO generateTokenDto(Authentication authentication) {
@@ -43,7 +48,7 @@ public class TokenProvider {
         System.out.println("토큰만료시간: " + tokenExpiresIn);
 
         String subject;
-        if (authentication instanceof OAuth2AuthenticationToken){
+        if (authentication instanceof OAuth2AuthenticationToken) {
             OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
             System.out.println("oauthToken email: " + oauthToken.getPrincipal().getAttribute("email"));
             System.out.println("authentication: " + authentication);
@@ -86,7 +91,7 @@ public class TokenProvider {
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             System.out.println("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            System.out.println("만료된 JWT 토큰입니다.");
+            throw new RuntimeException("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             System.out.println("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
