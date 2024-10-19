@@ -33,7 +33,7 @@ public class AuthService {
         }
 
         String password = requestDto.getPassword();
-        String passwordRegex = "^(?=.*\\d)(?=.*[@$!%*?&])[\\d@$!%*?&]{8,}$";
+        String passwordRegex = "^(?=.*\\d)(?=.*[@$!%*?&]).{8,}$";
 
         if (!Pattern.matches(passwordRegex, password)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -52,14 +52,15 @@ public class AuthService {
         System.out.println(authenticationToken);
         Authentication authentication;
 
-        if (passwordEncoder.matches(requestDto.getPassword(), userRepository.findByEmail(requestDto.getEmail()).get().getPassword())) {
-            System.out.println("ddd");
-        }
-
         try {
             authentication = managerBuilder.getObject().authenticate(authenticationToken);
         } catch (Exception err) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 혹은 비밀번호가 틀립니다.");
+        }
+
+        UserEntity user = userRepository.findByEmail(requestDto.getEmail()).get();
+        if (user.getRefresh_token() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "카카오 유저입니다. 카카오 로그인을 이용해주세요.");
         }
 
         System.out.println(authentication);
