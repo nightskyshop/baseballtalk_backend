@@ -30,4 +30,9 @@ public class AuthController {
         System.out.println(loginDTO.getPassword());
         return ResponseEntity.ok(service.login(loginDTO));
     }
+
+    @GetMapping("/refreshToken")
+    public TokenDTO accessTokenFromRefreshToken(@RequestHeader("RefreshToken") String refreshToken) {
+        return new TokenDTO();
+    }
 }

@@ -59,6 +59,7 @@ public class AuthService {
         }
 
         UserEntity user = userRepository.findByEmail(requestDto.getEmail()).get();
+
         if (user.getRefresh_token() != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "카카오 유저입니다. 카카오 로그인을 이용해주세요.");
         }

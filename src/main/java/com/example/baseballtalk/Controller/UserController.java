@@ -1,5 +1,6 @@
 package com.example.baseballtalk.Controller;
 
+import com.example.baseballtalk.Config.Authority;
 import com.example.baseballtalk.DTO.PasswordDTO;
 import com.example.baseballtalk.DTO.UserRequestDTO;
 import com.example.baseballtalk.DTO.UserResponseDTO;
@@ -10,8 +11,13 @@ import com.example.baseballtalk.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +45,13 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "JWT 토큰이 유효하지 않습니다.");
         }
 
-        String userId = tokenProvider.getUserIdFromToken(token);
+        // String userId = tokenProvider.getUserIdFromToken(token);
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().equals(new SimpleGrantedAuthority("ROLE_OAUTH"))){
+
+        }
+        System.out.println("userId: " + userId);
+
         int tokenId;
 
         try {

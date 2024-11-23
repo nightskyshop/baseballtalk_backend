@@ -68,6 +68,7 @@ public class SecurityConfig {
                 }));
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers("/auth/**", "/error").permitAll()
+                .requestMatchers("/kakao/**").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll());
 

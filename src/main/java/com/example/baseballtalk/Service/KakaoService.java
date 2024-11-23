@@ -4,6 +4,8 @@ import com.example.baseballtalk.DTO.*;
 import com.example.baseballtalk.Entity.UserEntity;
 import com.example.baseballtalk.JWT.TokenProvider;
 import com.example.baseballtalk.Repository.UserRepository;
+import com.example.baseballtalk.Service.oauth.CustomOAuth2User;
+import com.example.baseballtalk.Service.oauth.CustomOAuth2UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.json.JSONParser;
@@ -15,10 +17,17 @@ import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,9 +37,9 @@ import javax.json.JsonReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
+import static com.example.baseballtalk.Config.Authority.ROLE_OAUTH;
 import static com.example.baseballtalk.Config.Authority.ROLE_USER;
 
 @Service
@@ -56,7 +65,7 @@ public class KakaoService {
     private final static String KAKAO_API_URI = "https://kapi.kakao.com";
 
     public TokenDTO getKakaoInfo(String code) throws Exception {
-        if (code == null) throw new Exception("Failed get authorization code");
+        if (code == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed get authorization code");
 
         String accessToken = "";
         String refreshToken = "";
@@ -136,26 +145,31 @@ public class KakaoService {
         Optional<UserEntity> existingUser = user_repository.findByEmail(kakaoUser.getEmail());
         if (existingUser.isPresent()) {
             UserEntity user = existingUser.get();
-//            user.setUsername(kakaoUser.getNickname());
-//            user.setImage(kakaoUser.getProfileImgUrl());
             user.setRefresh_token(refreshToken);
 
-            LoginDTO requestDto = new LoginDTO();
-            requestDto.setEmail(kakaoUser.getEmail());
-            requestDto.setPassword("1111");
+            Map<String,Object> attributes = new HashMap<>();
+            attributes.put("email", kakaoUser.getEmail());
+            attributes.put("id", user.getId());
 
-            UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
-            Authentication authentication;
+            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_OAUTH"));
+            OAuth2User oAuth2User = new DefaultOAuth2User(
+                    authorities,
+                    attributes,
+                    "email" // OAuth2User에서 사용하는 사용자 식별자 키
+            );
+            System.out.println(oAuth2User);
 
-            try {
-                authentication = managerBuilder.getObject().authenticate(authenticationToken);
-            } catch (Exception err) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 혹은 비밀번호가 틀립니다.");
-            }
+            String authorizedClientRegistrationId = "kakao";
 
-            System.out.println(authentication);
+            System.out.println("LOG1!!!!");
 
-            user_repository.save(user);
+            OAuth2AuthenticationToken oAuth2AuthenticationToken = new OAuth2AuthenticationToken(oAuth2User, authorities, authorizedClientRegistrationId);
+            System.out.println("LOG2!!!!");
+            System.out.println(oAuth2AuthenticationToken);
+
+            SecurityContextHolder.getContext().setAuthentication(oAuth2AuthenticationToken);
+            System.out.println("LOG3!!!!");
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             return tokenProvider.generateTokenDto(authentication);
         } else {
@@ -167,23 +181,32 @@ public class KakaoService {
 
             UserEntity newUser = userRequestDTO.toUser(passwordEncoder);
             newUser.setRefresh_token(refreshToken);
-            newUser.setAuthority(ROLE_USER);
+            newUser.setAuthority(ROLE_OAUTH);
             user_repository.save(newUser);
 
-            LoginDTO requestDto = new LoginDTO();
-            requestDto.setEmail(kakaoUser.getEmail());
-            requestDto.setPassword("1111");
+            Map<String,Object> attributes = new HashMap<>();
+            attributes.put("email", kakaoUser.getEmail());
+            attributes.put("id", newUser.getId());
 
-            UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
-            Authentication authentication;
+            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_OAUTH"));
+            OAuth2User oAuth2User = new DefaultOAuth2User(
+                    authorities,
+                    attributes,
+                    "email" // OAuth2User에서 사용하는 사용자 식별자 키
+            );
+            System.out.println(oAuth2User);
 
-            try {
-                authentication = managerBuilder.getObject().authenticate(authenticationToken);
-            } catch (Exception err) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 혹은 비밀번호가 틀립니다.");
-            }
+            String authorizedClientRegistrationId = "kakao";
 
-            System.out.println(authentication);
+            System.out.println("LOG1!!!!");
+
+            OAuth2AuthenticationToken oAuth2AuthenticationToken = new OAuth2AuthenticationToken(oAuth2User, authorities, authorizedClientRegistrationId);
+            System.out.println("LOG2!!!!");
+            System.out.println(oAuth2AuthenticationToken);
+
+            SecurityContextHolder.getContext().setAuthentication(oAuth2AuthenticationToken);
+            System.out.println("LOG3!!!!");
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             return tokenProvider.generateTokenDto(authentication);
         }
